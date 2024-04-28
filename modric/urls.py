@@ -1,8 +1,10 @@
 from django.urls import path
-from . import views
+from .views import index, registro, registro_exito
 
 app_name = 'modric'
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('', index, name='index'),
+    path('registro/', registro, name='registro'),
+    path('registro-exito/', registro_exito, name='registro_exito'),
     ]
