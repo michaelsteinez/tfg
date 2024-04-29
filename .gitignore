@@ -3,7 +3,9 @@ venv
 
 # Migraciones
 modric/migrations/
+/modric/migrations/
 
 # settings
 tfgapp/settings.py
 tfgapp/settings.py.bk
+

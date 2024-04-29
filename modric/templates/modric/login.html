@@ -2,14 +2,14 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Registro de Nuevo Usuario</title>
+    <title>Iniciar Sesión</title>
 </head>
 <body>
-    <h2>Registro de Nuevo Usuario</h2>
+    <h2>Iniciar Sesión</h2>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Registrarse</button>
+        <button type="submit">Iniciar Sesión</button>
     </form>
     <p><a href="{% url 'modric:index' %}">Volver a inicio</a></p>
 </body>

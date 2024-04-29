@@ -7,7 +7,14 @@
 <body>
 <H1>TFG UNIR - Encuentros de aficionados</H1>
 <p>Bienvenido/a</p>
-<a>Iniciar sesión</a> <a href="{% url 'modric:registro' %}">Registrarse</a>
+    {% if user.is_authenticated %}
+     <li>User: {{ user.get_username }}</li>
+     <li><a href="{% url 'modric:logout' %}">Cerrar sesión</a></li>
+   {% endif %}
+  </ul>
+
+<p><a href="{% url 'modric:login' %}">Iniciar sesión</a></p>
+<p><a href="{% url 'modric:registro' %}">Registrarse</a></p>
 </body>
 <footer>
     <p>UNIR</p>
