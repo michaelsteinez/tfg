@@ -1,3 +1,18 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
-# Create your models here.
+
+class CustomUser(AbstractUser):
+    altura = models.IntegerField(null=True, blank=True)
+    fecha_nac = models.DateField(null=True, blank=True)
+    V = 'V'
+    M = 'M'
+    sexo_choices = (
+        (V, 'Varón'),
+        (M, 'Mujer'),
+    )
+    sexo = models.CharField(max_length=1, choices=sexo_choices, default='V')
+
+    def __str__(self):
+        return self.username
+

@@ -1,24 +1,18 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>TFG Modric</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block content %}
 <H1>TFG UNIR - Encuentros de aficionados</H1>
-<p>Bienvenido/a</p>
-    {% if user.is_authenticated %}
-     <li>User: {{ user.get_username }}</li>
-     <li><a href="{% url 'modric:logout' %}">Cerrar sesión</a></li>
-   {% endif %}
-  </ul>
 
-<p><a href="{% url 'modric:login' %}">Iniciar sesión</a></p>
-<p><a href="{% url 'modric:registro' %}">Registrarse</a></p>
-</body>
+    {% if user.is_authenticated %}
+        <p>Bienvenido/a {{ user.get_username }}</p>
+        <p><a href="{% url 'logout' %}">Cerrar sesión</a></p>
+    {% else %}
+        <p><a href="{% url 'login' %}">Iniciar sesión</a></p>
+        <p><a href="{% url 'accounts:signup' %}">Registrarse</a></p>
+    {% endif %}
+
 <footer>
     <p>UNIR</p>
     <p>Trabajo de Fin de Grado</p>
     <p>Miwe 2024</p>
 </footer>
-</html>
+{% endblock %}

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Inicio{% endblock %}
+{% block title %}TFG UNIR 2024{% endblock %}
 
 {% block content %}
     {% if user.is_authenticated %}
@@ -12,6 +12,7 @@
         </form>
     {% else %}
         <p>No has iniciado sesión</p>
+        <p><a href="{% url 'accounts:signup' %}">Darse de alta</a></p>
         <p><a href="{% url 'password_reset' %}">Recuperar contraseña</a></p>
         <a href="{% url 'login' %}">Iniciar sesión</a>
     {% endif %}
