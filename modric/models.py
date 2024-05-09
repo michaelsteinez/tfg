@@ -6,7 +6,10 @@ from accounts.models import CustomUser
 class Deporte(models.Model):
     nombre = models.CharField(max_length=60, unique=True)
     num_jugadores = models.IntegerField(default=1)
-    duracion_base = models.IntegerField(default=60) # Duración del encuentro en minutos
+    duracion_base = models.IntegerField(default=60) # Duración del encuentro en minutos típicos al alquilar una pista
+
+    def __str__(self):
+        return self.nombre
 
 
 class Recinto(models.Model):
@@ -14,18 +17,21 @@ class Recinto(models.Model):
     municipio = models.CharField(max_length=100)
     provincia = models.CharField(max_length=100)
     pais = models.CharField(max_length=60)
-    cubierto = models.BooleanField(default=False) # A la intemperie o no
     deportes = models.ManyToManyField(Deporte, related_name='recintos') # Lista de deportes practicables
-    pista = models.CharField(max_length=60, blank=True) # Pista dentro del recinto
 
+    def __str__(self):
+        return f"{self.nombre} ({self.municipio})"
 
 class Partido(models.Model):
     deporte = models.ForeignKey(Deporte, on_delete=models.CASCADE)
     fecha = models.DateField()
     duracion_personalizada = models.IntegerField(default=60) # Duración personalizada por el administrador
     recinto = models.ForeignKey(Recinto, on_delete=models.CASCADE)
+    nombre_pista = models.CharField(max_length=60, blank=True)  # Pista dentro del recinto
+    cubierto = models.BooleanField(default=False)  # A la intemperie o no
     precio_pista = models.FloatField(default=0)
     precio_jugador = models.FloatField(default=0)
+
 
     administradores = models.ManyToManyField(CustomUser, related_name='administradores_partido')
     integrantes = models.ManyToManyField(CustomUser, related_name='integrantes_partido')
