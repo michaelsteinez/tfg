@@ -25,18 +25,18 @@ class Recinto(models.Model):
 class Partido(models.Model):
     deporte = models.ForeignKey(Deporte, on_delete=models.CASCADE)
     fecha = models.DateField()
-    duracion_personalizada = models.IntegerField(default=60) # Duración personalizada por el administrador
+    duracion_personalizada = models.IntegerField(default=60, verbose_name='Duración del encuentro') # Duración personalizada por el administrador
     recinto = models.ForeignKey(Recinto, on_delete=models.CASCADE)
-    nombre_pista = models.CharField(max_length=60, blank=True)  # Pista dentro del recinto
+    nombre_pista = models.CharField(max_length=60, blank=True, verbose_name='Número de pista')  # Pista dentro del recinto
     cubierto = models.BooleanField(default=False)  # A la intemperie o no
-    precio_pista = models.FloatField(default=0)
-    precio_jugador = models.FloatField(default=0)
+    precio_pista = models.FloatField(default=0, verbose_name='Precio total de la pista')
+    precio_jugador = models.FloatField(default=0, verbose_name='Precio por jugador')
 
 
-    administradores = models.ManyToManyField(CustomUser, related_name='administradores_partido')
+    administradores = models.ManyToManyField(CustomUser, related_name='administradores_partido', verbose_name='Organizadores')
     integrantes = models.ManyToManyField(CustomUser, related_name='integrantes_partido')
-    integrantes_local = models.ManyToManyField(CustomUser, related_name='integrantes_local')
-    integrantes_visitante = models.ManyToManyField(CustomUser, related_name='integrantes_visitante')
+    integrantes_local = models.ManyToManyField(CustomUser, related_name='integrantes_local', verbose_name='Equipo local')
+    integrantes_visitante = models.ManyToManyField(CustomUser, related_name='integrantes_visitante', verbose_name='Equipo visitante')
     color_local = models.CharField(max_length=60, blank=True, default='blanco')
     color_visitante = models.CharField(max_length=60, blank=True, default='azul')
 
@@ -50,7 +50,7 @@ class Partido(models.Model):
         (D, 'Victoria visitante'),
         (S, 'Suspendido'),
     )
-    resultado_estado = models.CharField(max_length=1, choices=resultado_choices, default='E')
+    resultado_estado = models.CharField(max_length=1, choices=resultado_choices, default='E', verbose_name='Resultado')
     marcador_local = models.IntegerField(default=0)
     marcador_visitante = models.IntegerField(default=0)
 
