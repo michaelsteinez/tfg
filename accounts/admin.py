@@ -13,11 +13,15 @@ class CustomUserAdmin(UserAdmin):
 
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
-        ('Personal info', {'fields': ('email', 'altura', 'fecha_nac', 'sexo')}),
-        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
-        ('Important dates', {'fields': ('last_login', 'date_joined')}),
+        ('Información personal', {'fields': ('first_name', 'last_name', 'email', 'altura', 'fecha_nac', 'sexo')}),
+        ('Permisos', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+        ('Fechas señaladas', {'fields': ('last_login', 'date_joined')}),
+    )
+    add_fieldsets = (
+        (None, {'fields': ('username', 'password')}),
+        ('Información personal', {'fields': ('first_name', 'last_name', 'email', 'altura', 'fecha_nac', 'sexo')}),
+        ('Permisos', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
     )
 
 
 admin.site.register(CustomUser, CustomUserAdmin)
-

@@ -16,7 +16,3 @@ def crear_partido(request):
     else:
         form = PartidoForm()
     return render(request, 'modric/crear_partido.html', {'form': form})
-
-
-
-
