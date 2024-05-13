@@ -23,6 +23,7 @@ class PartidoAdmin(admin.ModelAdmin):
         ('Resultado', {'fields': ('resultado_estado', 'marcador_local', 'marcador_visitante')}),
     )
 
+
 admin.site.register(Deporte, DeporteAdmin)
 admin.site.register(Recinto, RecintoAdmin)
 admin.site.register(Partido, PartidoAdmin)

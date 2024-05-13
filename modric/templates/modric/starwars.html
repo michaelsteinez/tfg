@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>Star Wars</h1>
+    {% for item in lista %}
+        <p>{{ item.name }} - {{ item.height }} - {{ item.weight }} - {{ item.gender }}</p>
+    {% endfor %}
+    {{ lista }}
+    <a href="{% url 'modric:index' %}">Volver</a>
+{% endblock %}

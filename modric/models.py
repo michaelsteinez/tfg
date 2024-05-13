@@ -22,6 +22,7 @@ class Recinto(models.Model):
     def __str__(self):
         return f"{self.nombre} ({self.municipio})"
 
+
 class Partido(models.Model):
     deporte = models.ForeignKey(Deporte, on_delete=models.CASCADE)
     fecha = models.DateField()
@@ -31,7 +32,6 @@ class Partido(models.Model):
     cubierto = models.BooleanField(default=False)  # A la intemperie o no
     precio_pista = models.FloatField(default=0, verbose_name='Precio total de la pista')
     precio_jugador = models.FloatField(default=0, verbose_name='Precio por jugador')
-
 
     administradores = models.ManyToManyField(CustomUser, related_name='administradores_partido', verbose_name='Organizadores')
     integrantes = models.ManyToManyField(CustomUser, related_name='integrantes_partido')
@@ -65,3 +65,11 @@ class Partido(models.Model):
 # usuario = CustomUser.objects.get(id=1)
 # partido = Partido.objects.get(id=1)
 # partido.integrantes.add(usuario)
+
+# #####################################################################################
+# class Comunidad(models.Model):
+#     nombre = models.CharField(max_length=100, unique=True)
+#     escudo = models.ImageField(upload_to='comunidads/')
+#     descripcion = models.TextField()
+#     administradores = models.ManyToManyField(CustomUser, related_name='administradores_comunidad')
+#     miembros = models.ManyToManyField(CustomUser, related_name='miembros_comunidad')

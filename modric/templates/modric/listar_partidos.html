@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>Listar partidos</h1>
+    {% for item in lista_partidos %}
+        <p>{{ item.fecha }} - {{ item.deporte }} - {{ item.recinto }}</p>
+    {% endfor %}
+    <a href="{% url 'modric:index' %}">Volver</a>
+{% endblock %}
