@@ -30,8 +30,24 @@ def crear_partido(request):
 
 @login_required
 def listar_partidos(request):
-    consulta = Partido.objects.all() # Filtraremos por jugador cuando haya más partidos y jugadores
-    return render(request, 'modric/listar_partidos.html', {"lista_partidos": consulta})
+    hoy = date.today()
+
+    # Filtrar los partidos anteriores a la fecha de hoy
+    partidos_anteriores = Partido.objects.filter(fecha__lt=hoy).order_by('-fecha')
+
+    # Filtrar los partidos de hoy
+    partidos_hoy = Partido.objects.filter(fecha__date=hoy).order_by('-fecha')
+
+    # Filtrar los partidos futuros
+    partidos_futuros = Partido.objects.filter(fecha__gt=hoy).order_by('-fecha')
+
+    return render(request, 'modric/listar_partidos.html', {
+        "partidos_anteriores": partidos_anteriores,
+        "partidos_hoy": partidos_hoy,
+        "partidos_futuros": partidos_futuros
+    })
+    # consulta = Partido.objects.all().order_by('-fecha')# Filtraremos por jugador cuando haya más partidos y jugadores
+    # return render(request, 'modric/listar_partidos.html', {"lista_partidos": consulta})
 
 
 @login_required

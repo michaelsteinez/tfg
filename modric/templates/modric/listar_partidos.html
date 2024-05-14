@@ -1,8 +1,33 @@
 {% extends 'base.html' %}
 {% block content %}
     <h1>Listar partidos</h1>
-    {% for item in lista_partidos %}
-        <p>{{ item.fecha }} - {{ item.deporte }} - {{ item.recinto }}</p>
-    {% endfor %}
+
+    {% if partidos_hoy %}
+        <H4>Partidos hoy:</H4>
+        {% for item in partidos_hoy %}
+            <p style="background-color: darkolivegreen">{{ item.fecha }} - {{ item.deporte }} - {{ item.recinto }}</p>
+        {% endfor %}
+    {% else %}
+        <H4 style="background-color: rosybrown">No tiene partidos hoy.</H4>
+    {% endif %}
+    <hr>    
+    {% if partidos_futuros %}
+        <H4>Próximos partidos:</H4>
+        {% for item in partidos_futuros %}
+            <p>{{ item.fecha }} - {{ item.deporte }} - {{ item.recinto }}</p>
+        {% endfor %}
+    {% else %}
+        <p>No tiene partidos previstos</p>
+    {% endif %}
+    <hr>
+    {% if partidos_anteriores %}
+        <H4>Partidos anteriores:</H4>
+        {% for item in partidos_anteriores %}
+            <p>{{ item.fecha }} - {{ item.deporte }} - {{ item.recinto }}</p>
+        {% endfor %}
+    {% else %}
+        <p>Aún no tiene partidos disputados.</p>
+    {% endif %}
+    
     <a href="{% url 'modric:index' %}">Volver</a>
 {% endblock %}
