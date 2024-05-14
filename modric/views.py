@@ -74,7 +74,7 @@ def importar_usuarios_API(request):
             personaje.email = "borrame@apistarwars.com"
             personaje.fecha_nac = generar_fecha_aleatoria()
 
-            # personaje.save()
+            personaje.save()
 
             return personaje
         else:
@@ -82,7 +82,7 @@ def importar_usuarios_API(request):
             return None
 
     lista_personajes = []
-    for cont in range(1, 10):
+    for cont in range(1, 30):
         personaje = obtener_personaje(cont)
         if personaje:
             lista_personajes.append(personaje)
