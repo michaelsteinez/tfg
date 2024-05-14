@@ -34,9 +34,9 @@ class Partido(models.Model):
     precio_jugador = models.FloatField(default=0, verbose_name='Precio por jugador')
 
     administradores = models.ManyToManyField(CustomUser, related_name='administradores_partido', verbose_name='Organizadores')
-    integrantes = models.ManyToManyField(CustomUser, related_name='integrantes_partido')
-    integrantes_local = models.ManyToManyField(CustomUser, related_name='integrantes_local', verbose_name='Equipo local')
-    integrantes_visitante = models.ManyToManyField(CustomUser, related_name='integrantes_visitante', verbose_name='Equipo visitante')
+    integrantes = models.ManyToManyField(CustomUser, related_name='integrantes_partido', blank=True, verbose_name='Integrantes')
+    integrantes_local = models.ManyToManyField(CustomUser, related_name='integrantes_local', blank=True, verbose_name='Equipo local')
+    integrantes_visitante = models.ManyToManyField(CustomUser, related_name='integrantes_visitante', blank=True, verbose_name='Equipo visitante')
     color_local = models.CharField(max_length=60, blank=True, default='blanco')
     color_visitante = models.CharField(max_length=60, blank=True, default='azul')
 
