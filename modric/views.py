@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import date, timezone
 from random import randint
 
 from django.contrib.auth.decorators import login_required
@@ -8,6 +8,7 @@ import requests
 from modric.models import Partido
 from .forms import PartidoForm
 from accounts.models import CustomUser
+import time
 
 
 @login_required
@@ -35,6 +36,7 @@ def listar_partidos(request):
 
 @login_required
 def importar_usuarios_API(request):
+    # Funcion pseudoaleatoria para generar fechas de nacimiento
     def generar_fecha_aleatoria():
         # Genera un año aleatorio entre 1970 y 2002
         año = randint(1970, 2002)
@@ -43,7 +45,7 @@ def importar_usuarios_API(request):
         dia = randint(1, 28)  # Usamos 28 como máximo para simplificar, ya que febrero puede tener 28 días
 
         # Crea un objeto datetime con la fecha aleatoria generada
-        fecha_aleatoria = datetime(year=año, month=mes, day=dia)
+        fecha_aleatoria = date(year=año, month=mes, day=dia)
 
         return fecha_aleatoria
     def obtener_personaje(id_personaje):
@@ -55,6 +57,8 @@ def importar_usuarios_API(request):
             nombre = datos['result']['properties']['name']
             apellido = "API"
             altura = datos['result']['properties']['height']
+            if altura == 'unknown':
+                altura = '165'
             if datos['result']['properties']['gender'] == 'female':
                 sexo = 'M'
             else:
@@ -70,16 +74,18 @@ def importar_usuarios_API(request):
             personaje.email = "borrame@apistarwars.com"
             personaje.fecha_nac = generar_fecha_aleatoria()
 
-            personaje.save()
+            # personaje.save()
 
-            return datos['result']['properties']
+            return personaje
         else:
             print("Error al obtener datos:", respuesta.status_code)
             return None
 
     lista_personajes = []
-    for cont in range(1, 40):
-        lista_personajes.append(obtener_personaje(cont))
+    for cont in range(1, 10):
+        personaje = obtener_personaje(cont)
+        if personaje:
+            lista_personajes.append(personaje)
     # print(lista_personajes)
 
     return render(request, 'modric/starwars.html', {"lista": lista_personajes})

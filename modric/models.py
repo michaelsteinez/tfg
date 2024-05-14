@@ -25,7 +25,7 @@ class Recinto(models.Model):
 
 class Partido(models.Model):
     deporte = models.ForeignKey(Deporte, on_delete=models.CASCADE)
-    fecha = models.DateField()
+    fecha = models.DateTimeField()
     duracion_personalizada = models.IntegerField(default=60, verbose_name='Duración del encuentro') # Duración personalizada por el administrador
     recinto = models.ForeignKey(Recinto, on_delete=models.CASCADE)
     nombre_pista = models.CharField(max_length=60, blank=True, verbose_name='Número de pista')  # Pista dentro del recinto
@@ -51,6 +51,7 @@ class Partido(models.Model):
         (S, 'Suspendido'),
     )
     resultado_estado = models.CharField(max_length=1, choices=resultado_choices, default='E', verbose_name='Resultado')
+    # Este marcador habrá que adaptarlo a pádel y tenis para recoger como fueron los juegos y los posibles tie-break
     marcador_local = models.IntegerField(default=0)
     marcador_visitante = models.IntegerField(default=0)
 

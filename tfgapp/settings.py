@@ -119,7 +119,7 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'es-es'
 
 TIME_ZONE = 'Europe/Madrid'
-
+DATETIME_FORMAT = 'Y-m-d H:i'  # Esto mostrará la fecha y hora sin los segundos
 USE_I18N = True
 
 USE_TZ = True
