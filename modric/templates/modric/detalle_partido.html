@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>Detalle partido</h1>
+    
+    {% if partido %}
+        <p>{{ partido.deporte }}</p>
+        <p>{{ partido.fecha }}</p>
+        <p>Duración {{ partido.duracion_personalizada }} minutos</p>  
+        <p>Recinto: {{ partido.recinto }}</p>
+        <p>Número de pista: {{ partido.nombre_pista }}</p> 
+        <p>
+            {% if  partido.cubierto %}
+                Pista cubierta.
+            {% else %}
+                Pista al aire libre.
+            {% endif %}
+        </p>
+        <hr>
+        
+        {% if administradores %}
+        <p>Organizador/es:</p>        
+        {% for item in administradores %}
+            <p>{{ item }}</p>    
+        {% endfor %}
+        {% else %}
+            <p>Aún no hay administradores definidos para este partido.</p>
+        {% endif %}
+        <hr>
+        
+        {% if integrantes_local %}
+            <p>Jugadores del equipo local:</p>        
+            {% for item in integrantes_local %}
+                <p>{{ item }}</p>    
+            {% endfor %}
+        {% else %}
+            <p>No hay jugadores asignados al equipo local.</p>
+        {% endif %}
+        <hr>
+        
+        {% if integrantes_visitantes %}
+            <p>Jugadores del equipo visitante:</p>        
+            {% for item in integrantes_visitantes %}
+                <p>{{ item }}</p>    
+            {% endfor %}
+        {% else %}
+            <p>No hay jugadores asignados al equipo visitante.</p>
+        {% endif %}
+        <hr>
+        
+        {% if sinequipo %}
+            <p>Jugadores apuntados pero sin equipo:</p>        
+            {% for item in sinequipo %}
+                <p>{{ item }}</p>    
+            {% endfor %}
+        {% else %}
+            <p>No hay jugadores sin equipo asignado.</p>
+        {% endif %}
+        <hr>
+    {% else %}
+        <p>No hay ningún partido con ese identificador</p>
+    {% endif %}
+    <p><a href="{% url 'modric:ver_partidos' %}">Volver a lista de partidos</a></p>
+    <p><a href="{% url 'modric:index' %}">Inicio</a></p>
+{% endblock %}

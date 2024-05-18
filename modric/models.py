@@ -23,6 +23,7 @@ class Recinto(models.Model):
         return f"{self.nombre} ({self.municipio})"
 
 
+# A la clase Partido le falta un atributo "creador" que no puede estar vacío y un atributo dirección
 class Partido(models.Model):
     deporte = models.ForeignKey(Deporte, on_delete=models.CASCADE)
     fecha = models.DateTimeField()
@@ -35,6 +36,9 @@ class Partido(models.Model):
 
     administradores = models.ManyToManyField(CustomUser, related_name='administradores_partido', verbose_name='Organizadores')
     integrantes = models.ManyToManyField(CustomUser, related_name='integrantes_partido', blank=True, verbose_name='Integrantes')
+    # Falta controlar que un jugador no pueda estar en el equipo local y en el visitante a la vez
+    # Ambos deben pertener a integrantes (quizas usando sets?)
+    # Habrá que borrar antes los partidos existentes para tener la base de datos limpia
     integrantes_local = models.ManyToManyField(CustomUser, related_name='integrantes_local', blank=True, verbose_name='Equipo local')
     integrantes_visitante = models.ManyToManyField(CustomUser, related_name='integrantes_visitante', blank=True, verbose_name='Equipo visitante')
     color_local = models.CharField(max_length=60, blank=True, default='blanco')

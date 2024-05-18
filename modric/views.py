@@ -1,4 +1,5 @@
-from datetime import date, timezone
+from datetime import date, datetime, timedelta
+from django.utils import timezone
 from random import randint
 
 from django.contrib.auth.decorators import login_required
@@ -28,26 +29,59 @@ def crear_partido(request):
     return render(request, 'modric/crear_partido.html', {'form': form})
 
 
+def detalle_partido(request, id):
+    partido = Partido.objects.get(id=id)
+    administradores = partido.administradores.all()
+    integrantes_local = partido.integrantes_local.all()
+    integrantes_visitantes = partido.integrantes_visitante.all()
+    sinequipo = partido.integrantes.all()
+
+    # Convertimos a conjuntos para poder hacer la diferencia
+    integrantes_local_set = set(integrantes_local)
+    integrantes_visitantes_set = set(integrantes_visitantes)
+
+    # Calculamos los integrantes sin equipo
+    sinequipo = set(sinequipo) - integrantes_local_set - integrantes_visitantes_set
+
+    # Convertimos el conjunto resultante de nuevo a QuerySet (o lista)
+    sinequipo = list(sinequipo)
+
+    return render(request, 'modric/detalle_partido.html', {
+        'partido': partido,
+        'administradores': administradores,
+        'integrantes_local': integrantes_local,
+        'integrantes_visitantes': integrantes_visitantes,
+        'sinequipo': sinequipo
+    })
+
+
 @login_required
 def listar_partidos(request):
-    hoy = date.today()
+    # Obtener la fecha y hora actuales con soporte para zonas horarias para evitar el warning
+    now = timezone.now()
+    today = now.date()
+    usuario = request.user
 
-    # Filtrar los partidos anteriores a la fecha de hoy
-    partidos_anteriores = Partido.objects.filter(fecha__lt=hoy).order_by('-fecha')
+    # Definir el inicio del día de hoy y el inicio del día de mañana
+    start_today = datetime.combine(today, datetime.min.time())
+    start_today = timezone.make_aware(start_today, timezone.get_current_timezone())
+    start_tomorrow = start_today + timedelta(days=1)
 
-    # Filtrar los partidos de hoy
-    partidos_hoy = Partido.objects.filter(fecha__date=hoy).order_by('-fecha')
+    # Filtrar los partidos anteriores a hoy (no incluye partidos de hoy)
+    partidos_anteriores = Partido.objects.filter(fecha__lt=start_today).order_by('-fecha').filter(integrantes=usuario)
 
-    # Filtrar los partidos futuros
-    partidos_futuros = Partido.objects.filter(fecha__gt=hoy).order_by('-fecha')
+    # Filtrar los partidos de hoy (independientemente de la hora)
+    partidos_hoy = Partido.objects.filter(fecha__gte=start_today, fecha__lt=start_tomorrow).order_by('-fecha').filter(integrantes=usuario)
+
+    # Filtrar los partidos futuros (después de hoy)
+    partidos_futuros = Partido.objects.filter(fecha__gte=start_tomorrow).order_by('-fecha').filter(integrantes=usuario)
 
     return render(request, 'modric/listar_partidos.html', {
         "partidos_anteriores": partidos_anteriores,
         "partidos_hoy": partidos_hoy,
-        "partidos_futuros": partidos_futuros
+        "partidos_futuros": partidos_futuros,
+        "usuario": usuario
     })
-    # consulta = Partido.objects.all().order_by('-fecha')# Filtraremos por jugador cuando haya más partidos y jugadores
-    # return render(request, 'modric/listar_partidos.html', {"lista_partidos": consulta})
 
 
 @login_required
