@@ -27,7 +27,6 @@ def crear_partido(request):
             username = request.user.username
             creador = CustomUser.objects.get(username=username)
             partido.creador = creador
-            partido.integrantes.add(creador)
             partido.save()
             return redirect('modric:index')  # Reemplaza 'lista_partidos' ('index') con el nombre de la URL de tu lista de partidos
     else:
