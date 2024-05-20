@@ -2,6 +2,22 @@ from django.db import models
 from accounts.models import CustomUser
 
 
+class Comunidad(models.Model):
+    nombre = models.CharField(max_length=100, unique=True)
+    escudo = models.ImageField(upload_to='comunidades/', blank=True)
+    descripcion = models.TextField(blank=True)
+    fecha_creacion = models.DateField(auto_now_add=True)
+    administradores = models.ManyToManyField(CustomUser, related_name='administradores_comunidad')
+    miembros = models.ManyToManyField(CustomUser, related_name='miembros_comunidad')
+
+    class Meta:
+        verbose_name = 'Comunidad'
+        verbose_name_plural ='Comunidades'
+
+    def __str__(self):
+        return self.nombre
+
+
 # Create your models here.
 class Deporte(models.Model):
     nombre = models.CharField(max_length=60, unique=True)
@@ -14,6 +30,7 @@ class Deporte(models.Model):
 
 class Recinto(models.Model):
     nombre = models.CharField(max_length=60)
+    calle = models.CharField(max_length=120, blank=True)
     municipio = models.CharField(max_length=100)
     provincia = models.CharField(max_length=100)
     pais = models.CharField(max_length=60)
@@ -59,6 +76,15 @@ class Partido(models.Model):
     marcador_local = models.IntegerField(default=0)
     marcador_visitante = models.IntegerField(default=0)
 
+    A = 'A'
+    P = 'P'
+    visibilidad_choices = (
+        (A, 'Público'),
+        (P, 'Privado'),
+    )
+    visibilidad = models.CharField(max_length=1, choices=visibilidad_choices, default='A', verbose_name='Visibilidad')
+    comunidad = models.ForeignKey(Comunidad, on_delete=models.CASCADE, null=True)
+
     def __str__(self):
         return f"Partido de {self.deporte} el {self.fecha}"
 
@@ -72,9 +98,3 @@ class Partido(models.Model):
 # partido.integrantes.add(usuario)
 
 # #####################################################################################
-# class Comunidad(models.Model):
-#     nombre = models.CharField(max_length=100, unique=True)
-#     escudo = models.ImageField(upload_to='comunidads/')
-#     descripcion = models.TextField()
-#     administradores = models.ManyToManyField(CustomUser, related_name='administradores_comunidad')
-#     miembros = models.ManyToManyField(CustomUser, related_name='miembros_comunidad')
