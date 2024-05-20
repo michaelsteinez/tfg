@@ -51,6 +51,7 @@ class Partido(models.Model):
     precio_pista = models.FloatField(default=0, verbose_name='Precio total de la pista')
     precio_jugador = models.FloatField(default=0, verbose_name='Precio por jugador')
 
+    creador = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)
     administradores = models.ManyToManyField(CustomUser, related_name='administradores_partido', verbose_name='Organizadores')
     integrantes = models.ManyToManyField(CustomUser, related_name='integrantes_partido', blank=True, verbose_name='Integrantes')
     # Falta controlar que un jugador no pueda estar en el equipo local y en el visitante a la vez

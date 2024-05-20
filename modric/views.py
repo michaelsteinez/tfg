@@ -10,7 +10,8 @@ from modric.models import Partido
 from .forms import PartidoForm
 from accounts.models import CustomUser
 import time
-
+# Importamos Q para combinar las condiciones de los filtros en las querysets
+from django.db.models import Q
 
 @login_required
 def index(request):
@@ -22,7 +23,12 @@ def crear_partido(request):
     if request.method == 'POST':
         form = PartidoForm(request.POST)
         if form.is_valid():
-            form.save()
+            partido = form.save(commit=False)
+            username = request.user.username
+            creador = CustomUser.objects.get(username=username)
+            partido.creador = creador
+            partido.integrantes.add(creador)
+            partido.save()
             return redirect('modric:index')  # Reemplaza 'lista_partidos' ('index') con el nombre de la URL de tu lista de partidos
     else:
         form = PartidoForm()
@@ -68,13 +74,19 @@ def listar_partidos(request):
     start_tomorrow = start_today + timedelta(days=1)
 
     # Filtrar los partidos anteriores a hoy (no incluye partidos de hoy)
-    partidos_anteriores = Partido.objects.filter(fecha__lt=start_today).order_by('-fecha').filter(integrantes=usuario)
+    partidos_anteriores = Partido.objects.filter(fecha__lt=start_today).filter(
+        Q(integrantes=usuario) | Q(creador=usuario)
+    ).distinct().order_by('-fecha')
 
     # Filtrar los partidos de hoy (independientemente de la hora)
-    partidos_hoy = Partido.objects.filter(fecha__gte=start_today, fecha__lt=start_tomorrow).order_by('-fecha').filter(integrantes=usuario)
+    partidos_hoy = Partido.objects.filter(fecha__gte=start_today, fecha__lt=start_tomorrow).filter(
+        Q(integrantes=usuario) | Q(creador=usuario)
+    ).distinct().order_by('-fecha')
 
     # Filtrar los partidos futuros (después de hoy)
-    partidos_futuros = Partido.objects.filter(fecha__gte=start_tomorrow).order_by('-fecha').filter(integrantes=usuario)
+    partidos_futuros = Partido.objects.filter(fecha__gte=start_tomorrow).filter(
+        Q(integrantes=usuario) | Q(creador=usuario)
+    ).distinct().order_by('-fecha')
 
     return render(request, 'modric/listar_partidos.html', {
         "partidos_anteriores": partidos_anteriores,
