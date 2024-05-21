@@ -34,6 +34,7 @@ def crear_partido(request):
     return render(request, 'modric/crear_partido.html', {'form': form})
 
 
+@login_required
 def detalle_partido(request, id):
     partido = Partido.objects.get(id=id)
     administradores = partido.administradores.all()
