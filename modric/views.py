@@ -1,9 +1,10 @@
 from datetime import date, datetime, timedelta
 from django.utils import timezone
+from django.utils.timezone import make_aware
 from random import randint
 
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 import requests
 
 from modric.models import Partido
@@ -12,6 +13,7 @@ from accounts.models import CustomUser
 import time
 # Importamos Q para combinar las condiciones de los filtros en las querysets
 from django.db.models import Q
+
 
 @login_required
 def index(request):
@@ -27,20 +29,67 @@ def crear_partido(request):
             username = request.user.username
             creador = CustomUser.objects.get(username=username)
             partido.creador = creador
+
+            # Combina fecha y hora en un solo campo
+            fecha = form.cleaned_data['fecha']
+            hora = form.cleaned_data['hora']
+            fecha_hora = datetime.combine(fecha, hora)
+            partido.fecha = make_aware(fecha_hora)
+
             partido.save()
-            return redirect('modric:index')  # Reemplaza 'lista_partidos' ('index') con el nombre de la URL de tu lista de partidos
+            # Para guardar los campos ManyToMany
+            form.save_m2m()
+            return redirect('modric:ver_partidos')
     else:
         form = PartidoForm()
     return render(request, 'modric/crear_partido.html', {'form': form})
 
 
 @login_required
-def detalle_partido(request, id):
-    partido = Partido.objects.get(id=id)
+def editar_partido(request, pk):
+    partido = get_object_or_404(Partido, pk=pk)
+
+    if request.method == 'POST':
+        form = PartidoForm(request.POST, instance=partido)
+        if form.is_valid():
+            partido = form.save(commit=False)
+            partido.creador = request.user
+
+            # Combina fecha y hora en un solo campo
+            fecha = form.cleaned_data['fecha']
+            hora = form.cleaned_data['hora']
+            fecha_hora = datetime.combine(fecha, hora)
+
+            # Asegúrate de que el datetime es consciente de la zona horaria
+            partido.fecha = make_aware(fecha_hora)
+
+            partido.save()
+            form.save_m2m()  # Para guardar los campos ManyToMany
+            return redirect('modric:index')  # Asegúrate de que 'modric:index' sea el nombre correcto de tu URL de éxito
+    else:
+        # Inicializar el formulario con los valores actuales del partido
+        initial_data = {
+            'fecha': partido.fecha.date().isoformat(),
+            'hora': partido.fecha.time(),
+        }
+        print(initial_data)
+        form = PartidoForm(instance=partido, initial=initial_data)
+
+    return render(request, 'modric/editar_partido.html', {'form': form, 'partido': partido})
+
+@login_required
+def detalle_partido(request, pk):
+    # Las dos asignaciones son equivalentes pero la segunda reenvia a Not Found
+    # partido = Partido.objects.get(pk=id)
+    partido = get_object_or_404(Partido, pk=pk)
+
     administradores = partido.administradores.all()
     integrantes_local = partido.integrantes_local.all()
     integrantes_visitantes = partido.integrantes_visitante.all()
     sinequipo = partido.integrantes.all()
+
+    # Comprobamos si el usuario es organizador o creador para ofrecerle editarlo
+    edicion = request.user in administradores or request.user == partido.creador
 
     # Convertimos a conjuntos para poder hacer la diferencia
     integrantes_local_set = set(integrantes_local)
@@ -57,7 +106,8 @@ def detalle_partido(request, id):
         'administradores': administradores,
         'integrantes_local': integrantes_local,
         'integrantes_visitantes': integrantes_visitantes,
-        'sinequipo': sinequipo
+        'sinequipo': sinequipo,
+        'edicion': edicion
     })
 
 
@@ -110,6 +160,7 @@ def importar_usuarios_API(request):
         fecha_aleatoria = date(year=año, month=mes, day=dia)
 
         return fecha_aleatoria
+
     def obtener_personaje(id_personaje):
         url = f"https://www.swapi.tech/api/people/{id_personaje}"
         respuesta = requests.get(url)
