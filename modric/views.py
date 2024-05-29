@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 import requests
 
-from modric.models import Partido
+from modric.models import Partido, Recinto
 from .forms import PartidoForm
 from accounts.models import CustomUser
 import time
@@ -131,18 +131,29 @@ def listar_partidos(request):
     # Filtrar los partidos de hoy (independientemente de la hora)
     partidos_hoy = Partido.objects.filter(fecha__gte=start_today, fecha__lt=start_tomorrow).filter(
         Q(integrantes=usuario) | Q(creador=usuario)
-    ).distinct().order_by('-fecha')
+    ).distinct().order_by('fecha')
 
     # Filtrar los partidos futuros (después de hoy)
     partidos_futuros = Partido.objects.filter(fecha__gte=start_tomorrow).filter(
         Q(integrantes=usuario) | Q(creador=usuario)
-    ).distinct().order_by('-fecha')
+    ).distinct().order_by('fecha')
 
     return render(request, 'modric/listar_partidos.html', {
         "partidos_anteriores": partidos_anteriores,
         "partidos_hoy": partidos_hoy,
         "partidos_futuros": partidos_futuros,
         "usuario": usuario
+    })
+
+
+@login_required
+def detalle_recinto(request, pk):
+    recinto = get_object_or_404(Recinto, pk=pk)
+    deportes = recinto.deportes.all()
+
+    return render(request, 'modric/recinto.html', {
+        'recinto': recinto,
+        'deportes': deportes,
     })
 
 

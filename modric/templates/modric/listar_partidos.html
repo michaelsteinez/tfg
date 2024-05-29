@@ -1,18 +1,34 @@
 {% extends 'base.html' %}
 {% block content %}
+    <script>
+    $(document).ready(function() {
+        $('#tablapartidos').DataTable(
+             {
+                 pageLength: -1,
+                 lengthMenu: [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"] ],
+                 columnDefs: [
+                        { "type": "num", "targets": 1 }
+                    ]
+             }
+        );
+    } );
+    </script>
+    
+    
     <h1>Listar partidos</h1>
     <p>Estos son todos los partidos de {{ usuario.username }}.</p>
+    <H4>Partidos de hoy {% now "" %}:</H4>
     {% if partidos_hoy %}
-        <H4>Partidos hoy:</H4>
+        
         {% for item in partidos_hoy %}
             <p>
                 <a href="{% url 'modric:detalle_partido' item.id %}">
-                    {{ item.fecha }} - {{ item.deporte }} - {{ item.recinto }}
+                    {{ item.fecha|date:"l"|capfirst }}, {{ item.fecha }} - {{ item.deporte }} - {{ item.recinto }}
                 </a>
             </p>
         {% endfor %}
     {% else %}
-        <H4>No tiene partidos hoy.</H4>
+        <p>No tiene partidos hoy.</p>
     {% endif %}
     <hr>    
     {% if partidos_futuros %}
@@ -20,7 +36,7 @@
         {% for item in partidos_futuros %}
             <p>
             <a href="{% url 'modric:detalle_partido' item.id %}">
-                {{ item.fecha }} - {{ item.deporte }} - {{ item.recinto }}
+                {{ item.fecha|date:"l"|capfirst }}, {{ item.fecha }} - {{ item.deporte }} - {{ item.recinto }}
             </a>
             </p>
         {% endfor %}
@@ -33,7 +49,7 @@
         {% for item in partidos_anteriores %}
              <p>
             <a href="{% url 'modric:detalle_partido' item.id %}">
-                {{ item.fecha }} - {{ item.deporte }} - {{ item.recinto }}
+                {{ item.fecha|date:"l"|capfirst }}, {{ item.fecha }} - {{ item.deporte }} - {{ item.recinto }}
             </a>
             </p>
         {% endfor %}

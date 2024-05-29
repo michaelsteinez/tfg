@@ -10,7 +10,7 @@
         <p>{{ partido.deporte }}</p>
         <p>{{ partido.fecha }}</p>
         <p>Duración {{ partido.duracion_personalizada }} minutos</p>  
-        <p>Recinto: {{ partido.recinto }}</p>
+        <p><a href="{% url 'modric:recinto' partido.recinto.pk %}">Recinto: {{ partido.recinto }}</a></p>
         <p>Número de pista: {{ partido.nombre_pista }}</p> 
         <p>
             {% if  partido.cubierto %}

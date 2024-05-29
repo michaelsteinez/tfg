@@ -1,5 +1,5 @@
 from django.urls import path
-from modric.views import index, crear_partido, listar_partidos, importar_usuarios_API, detalle_partido, editar_partido
+from modric.views import index, crear_partido, listar_partidos, importar_usuarios_API, detalle_partido, editar_partido, detalle_recinto
 
 app_name = 'modric'
 
@@ -11,6 +11,7 @@ urlpatterns = [
     path('partido/ver_detalle/<int:pk>', detalle_partido, name='detalle_partido'),
     path('partido/editar/<int:pk>/', editar_partido, name='editar_partido'),
 
+    path('recinto/<int:pk>/', detalle_recinto, name='recinto'),
 
     path('starwars/', importar_usuarios_API, name='importar_starwars'),
 

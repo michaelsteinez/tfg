@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>Recinto</h1>
+    <h2>{{ recinto.nombre }}</h2>
+    {% if recinto.calle %}
+        <p>Dirección: {{ recinto.calle }}</p>
+    {% endif %}
+    <p>{{ recinto.municipio }} ({{ recinto.provincia }})</p>
+    <p>{{ recinto.pais }}</p>    
+    <p>Deportes practicables:</p>
+    {% for deporte in deportes %}
+        <li>{{ deporte }}</li>
+    {% endfor %}
+    <p><a href="{% url 'modric:index' %}">Inicio</a></p>
+{% endblock %}
