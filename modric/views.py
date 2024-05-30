@@ -195,7 +195,7 @@ def importar_usuarios_API(request):
             personaje.last_name = apellido
             personaje.altura = altura
             personaje.sexo = sexo
-            personaje.email = "borrame@apistarwars.com"
+            personaje.email = f"borrame{id_personaje}@apistarwars.com"
             personaje.fecha_nac = generar_fecha_aleatoria()
 
             personaje.save()

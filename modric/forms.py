@@ -13,3 +13,13 @@ class PartidoForm(forms.ModelForm):
                   'precio_pista', 'precio_jugador', 'administradores', 'integrantes',
                   'integrantes_local', 'integrantes_visitante', 'color_local', 'color_visitante', 'resultado_estado',
                   'marcador_local', 'marcador_visitante', 'visibilidad', 'comunidad']
+
+
+class LoginForm(forms.Form):
+    username = forms.CharField(
+        max_length=150,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre de usuario'})
+    )
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Contraseña'})
+    )

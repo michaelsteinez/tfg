@@ -45,7 +45,7 @@
     {% endif %}
     <hr>
     {% if partidos_anteriores %}
-        <H4>Partidos anteriores:</H4>
+        <H4>Historial de partidos:</H4>
         {% for item in partidos_anteriores %}
              <p>
             <a href="{% url 'modric:detalle_partido' item.id %}">
