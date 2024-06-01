@@ -15,44 +15,92 @@
     </script>
     
     
-    <h1>Listar partidos</h1>
-    <p>Estos son todos los partidos de {{ usuario.username }}.</p>
+    <h1>Tus partidos</h1>
+    <p>Estos son todos tus partidos, <i>{{ usuario.username }}</i>.</p>
+    <br>
     <H4>Partidos de hoy {% now "" %}:</H4>
     {% if partidos_hoy %}
-        
-        {% for item in partidos_hoy %}
-            <p>
-                <a href="{% url 'modric:detalle_partido' item.id %}">
-                    {{ item.fecha|date:"l"|capfirst }}, {{ item.fecha }} - {{ item.deporte }} - {{ item.recinto }}
-                </a>
-            </p>
-        {% endfor %}
+        <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Deporte</th>
+                <th>Recinto</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for item in partidos_hoy %}
+                <tr>
+                    <td>
+                        <a href="{% url 'modric:detalle_partido' item.id %}">
+                        {{ item.fecha|date:"l"|capfirst }}, {{ item.fecha }}</a>
+                    </td>
+                    <td>{{ item.deporte }}</td>
+                    <td>
+                        <a href="{% url 'modric:recinto' item.recinto.id %}">{{ item.recinto }}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     {% else %}
         <p>No tiene partidos hoy.</p>
     {% endif %}
-    <hr>    
+    <br>    
     {% if partidos_futuros %}
         <H4>Próximos partidos:</H4>
-        {% for item in partidos_futuros %}
-            <p>
-            <a href="{% url 'modric:detalle_partido' item.id %}">
-                {{ item.fecha|date:"l"|capfirst }}, {{ item.fecha }} - {{ item.deporte }} - {{ item.recinto }}
-            </a>
-            </p>
-        {% endfor %}
+            <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Deporte</th>
+                    <th>Recinto</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for item in partidos_futuros %}
+                <tr>
+                    <td>
+                        <a href="{% url 'modric:detalle_partido' item.id %}">
+                        {{ item.fecha|date:"l"|capfirst }}, {{ item.fecha }}</a>
+                    </td>
+                    <td>{{ item.deporte }}</td>
+                    <td>
+                        <a href="{% url 'modric:recinto' item.recinto.id %}">{{ item.recinto }}</a>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
     {% else %}
         <p>No tiene partidos previstos</p>
     {% endif %}
-    <hr>
+    <br>
     {% if partidos_anteriores %}
         <H4>Historial de partidos:</H4>
-        {% for item in partidos_anteriores %}
-             <p>
-            <a href="{% url 'modric:detalle_partido' item.id %}">
-                {{ item.fecha|date:"l"|capfirst }}, {{ item.fecha }} - {{ item.deporte }} - {{ item.recinto }}
-            </a>
-            </p>
-        {% endfor %}
+        <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Deporte</th>
+                <th>Recinto</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for item in partidos_anteriores %}
+                 <tr>
+                    <td>
+                        <a href="{% url 'modric:detalle_partido' item.id %}">
+                        {{ item.fecha|date:"l"|capfirst }}, {{ item.fecha }}</a>
+                    </td>
+                    <td>{{ item.deporte }}</td>
+                    <td>
+                        <a href="{% url 'modric:recinto' item.recinto.id %}">{{ item.recinto }}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     {% else %}
         <p>Aún no tiene partidos disputados.</p>
     {% endif %}
