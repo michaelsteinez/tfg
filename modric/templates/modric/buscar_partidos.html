@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block content %}
+    <script>
+    $(document).ready(function() {
+        $('#tablapartidos').DataTable(
+             {
+                 pageLength: -1,
+                 lengthMenu: [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"] ],
+                 columnDefs: [
+                        { "type": "num", "targets": 1 }
+                    ]
+             }
+        );
+    } );
+    </script>
+    
+    
+    <h1>Tus partidos</h1>
+    <p>Estos son todos tus partidos, <i>{{ usuario.username }}</i>.</p>
+    <br>
+    <H4>Partidos de tus comunidades:</H4>
+    <p>Lista solo si no juega. Si es organizador o creador pero no juega, también saldrá aquí.</p>
+    {% if miscomunidades %}
+        <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Deporte</th>
+                <th>Comunidad</th>
+                <th>Recinto</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for item in miscomunidades %}
+                <tr>
+                    <td>
+                        <a href="{% url 'modric:detalle_partido' item.id %}">
+                        {{ item.fecha|date:"l"|capfirst }}, {{ item.fecha }}</a>
+                    </td>
+                    <td>{{ item.deporte }}</td>
+                    <td>{{ item.comunidad }}</td>
+                    <td>
+                        <a href="{% url 'modric:recinto' item.recinto.id %}">{{ item.recinto }}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay partidos de sus comunidades.</p>
+    {% endif %}
+    <br>    
+    {% if otros %}
+        <H4>Partidos abiertos de otras comunidades:</H4>
+            <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Deporte</th>
+                    <th>Comunidad</th>
+                    <th>Recinto</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for item in otros %}
+                <tr>
+                    <td>
+                        <a href="{% url 'modric:detalle_partido' item.id %}">
+                        {{ item.fecha|date:"l"|capfirst }}, {{ item.fecha }}</a>
+                    </td>
+                    <td>{{ item.deporte }}</td>
+                    <td>{{ item.comunidad }}</td>
+                    <td>
+                        <a href="{% url 'modric:recinto' item.recinto.id %}">{{ item.recinto }}</a>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+    {% else %}
+        <p>No hay partidos públicos de otras comunidades.</p>
+    {% endif %}
+    <br>
+    
+    <a href="{% url 'modric:index' %}">Volver</a>
+{% endblock %}

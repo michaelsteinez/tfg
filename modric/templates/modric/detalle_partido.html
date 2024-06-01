@@ -63,6 +63,7 @@
     {% else %}
         <p>No hay ningún partido con ese identificador</p>
     {% endif %}
+    <p><a href="{% url 'modric:buscar_partidos' %}">Volver a buscar partidos</a></p>
     <p><a href="{% url 'modric:ver_partidos' %}">Volver a lista de partidos</a></p>
     <p><a href="{% url 'modric:index' %}">Inicio</a></p>
 {% endblock %}

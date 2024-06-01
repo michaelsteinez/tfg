@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 import requests
 
-from modric.models import Partido, Recinto
+from modric.models import Partido, Recinto, Comunidad
 from .forms import PartidoForm
 from accounts.models import CustomUser
 import time
@@ -47,35 +47,39 @@ def crear_partido(request):
 
 @login_required
 def editar_partido(request, pk):
+    usuario = request.user
     partido = get_object_or_404(Partido, pk=pk)
 
-    if request.method == 'POST':
-        form = PartidoForm(request.POST, instance=partido)
-        if form.is_valid():
-            partido = form.save(commit=False)
-            partido.creador = request.user
+    if usuario in partido.administradores.all() or usuario == partido.creador:
+        if request.method == 'POST':
+            form = PartidoForm(request.POST, instance=partido)
+            if form.is_valid():
+                partido = form.save(commit=False)
+                partido.creador = request.user
 
-            # Combina fecha y hora en un solo campo
-            fecha = form.cleaned_data['fecha']
-            hora = form.cleaned_data['hora']
-            fecha_hora = datetime.combine(fecha, hora)
+                # Combina fecha y hora en un solo campo
+                fecha = form.cleaned_data['fecha']
+                hora = form.cleaned_data['hora']
+                fecha_hora = datetime.combine(fecha, hora)
 
-            # Asegúrate de que el datetime es consciente de la zona horaria
-            partido.fecha = make_aware(fecha_hora)
+                # Asegúrate de que el datetime es consciente de la zona horaria
+                partido.fecha = make_aware(fecha_hora)
 
-            partido.save()
-            form.save_m2m()  # Para guardar los campos ManyToMany
-            return redirect('modric:index')  # Asegúrate de que 'modric:index' sea el nombre correcto de tu URL de éxito
+                partido.save()
+                form.save_m2m()  # Para guardar los campos ManyToMany
+                return redirect('modric:index')  # Asegúrate de que 'modric:index' sea el nombre correcto de tu URL de éxito
+        else:
+            # Inicializar el formulario con los valores actuales del partido
+            initial_data = {
+                'fecha': partido.fecha.date().isoformat(),
+                'hora': partido.fecha.time(),
+            }
+            print(initial_data)
+            form = PartidoForm(instance=partido, initial=initial_data)
+        return render(request, 'modric/editar_partido.html', {'form': form, 'partido': partido})
     else:
-        # Inicializar el formulario con los valores actuales del partido
-        initial_data = {
-            'fecha': partido.fecha.date().isoformat(),
-            'hora': partido.fecha.time(),
-        }
-        print(initial_data)
-        form = PartidoForm(instance=partido, initial=initial_data)
+        return redirect('modric:detalle_partido', pk)
 
-    return render(request, 'modric/editar_partido.html', {'form': form, 'partido': partido})
 
 @login_required
 def detalle_partido(request, pk):
@@ -142,6 +146,30 @@ def listar_partidos(request):
         "partidos_anteriores": partidos_anteriores,
         "partidos_hoy": partidos_hoy,
         "partidos_futuros": partidos_futuros,
+        "usuario": usuario
+    })
+
+
+@login_required
+def buscar_partidos(request):
+    # Obtener la fecha y hora actuales con soporte para zonas horarias para evitar el warning
+    now = timezone.now()
+    usuario = request.user
+
+    comunidades = Comunidad.objects.filter(miembros=usuario)
+
+    # Filtrar los partidos sin comenzar en los que no estemos inscritos ya
+    miscomunidades = Partido.objects.filter(fecha__gte=now).filter(comunidad__in=comunidades).filter(
+        ~Q(integrantes=usuario)
+    ).distinct().order_by('fecha')
+    otros = Partido.objects.filter(fecha__gte=now).filter(visibilidad='A').filter(
+        ~Q(comunidad__in=comunidades)).filter(~Q(integrantes=usuario)).distinct().order_by('fecha')
+
+
+
+    return render(request, 'modric/buscar_partidos.html', {
+        "miscomunidades": miscomunidades,
+        "otros": otros,
         "usuario": usuario
     })
 

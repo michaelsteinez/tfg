@@ -5,7 +5,10 @@
     {% if user.is_authenticated %}
         <p>Bienvenido/a {{ user.get_username }}</p>
         <p><a href="{% url 'modric:crear_partido' %}">Crear partido</a></p>
-        <p><a href="{% url 'modric:ver_partidos' %}">Ver partidos</a></p>
+        
+        <p><a href="{% url 'modric:buscar_partidos' %}">Buscar partidos en mi zona</a></p>
+        
+        <p><a href="{% url 'modric:ver_partidos' %}">Mis partidos</a></p>
         <p><a href="{% url 'modric:importar_starwars' %}">Importar usuarios de star wars</a></p>
     {% else %}
         <p><a href="{% url 'login' %}">Iniciar sesión</a></p>

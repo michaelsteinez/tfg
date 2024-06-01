@@ -73,7 +73,8 @@ class Partido(models.Model):
         (S, 'Suspendido'),
     )
     resultado_estado = models.CharField(max_length=1, choices=resultado_choices, default='E', verbose_name='Resultado')
-    # Este marcador habrá que adaptarlo a pádel y tenis para recoger como fueron los juegos y los posibles tie-break
+    # Si sobrase tiempo, este marcador habrá que adaptarlo a pádel y tenis para recoger como fueron los juegos
+    # y los posibles tie-break
     marcador_local = models.IntegerField(default=0)
     marcador_visitante = models.IntegerField(default=0)
 
