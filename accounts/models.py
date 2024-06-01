@@ -14,7 +14,7 @@ class CustomUser(AbstractUser):
     sexo = models.CharField(max_length=1, choices=sexo_choices, default='V')
 
     email = models.EmailField(unique=True)
-    username = models.CharField(max_length=150, unique=True)
+    username = models.CharField(max_length=150, unique=True, verbose_name='Nombre de usuario')
 
     def __str__(self):
         return self.username
