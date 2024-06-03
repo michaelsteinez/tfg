@@ -1,5 +1,5 @@
 from django import forms
-from .models import Partido
+from .models import Partido, CustomUser
 
 
 class PartidoForm(forms.ModelForm):
@@ -14,12 +14,12 @@ class PartidoForm(forms.ModelForm):
                   'integrantes_local', 'integrantes_visitante', 'color_local', 'color_visitante', 'resultado_estado',
                   'marcador_local', 'marcador_visitante', 'visibilidad', 'comunidad']
 
+    def __init__(self, *args, **kwargs):
+        # Obtener la instancia del partido actual
+        partido = kwargs.get('instance')
+        super(PartidoForm, self).__init__(*args, **kwargs)
 
-class LoginForm(forms.Form):
-    username = forms.CharField(
-        max_length=150,
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre de usuario'})
-    )
-    password = forms.CharField(
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Contraseña'})
-    )
+        if partido:
+            # Filtrar los usuarios que forman parte de 'integrantes'
+            self.fields['integrantes_local'].queryset = partido.integrantes.all()
+            self.fields['integrantes_visitante'].queryset = partido.integrantes.all()

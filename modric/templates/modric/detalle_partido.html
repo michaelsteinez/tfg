@@ -11,7 +11,11 @@
         <p>{{ partido.fecha }}</p>
         <p>Duración {{ partido.duracion_personalizada }} minutos</p>  
         <p><a href="{% url 'modric:recinto' partido.recinto.pk %}">Recinto: {{ partido.recinto }}</a></p>
-        <p>Número de pista: {{ partido.nombre_pista }}</p> 
+        <p>
+            {% if partido.nombre_pista %}
+            Número de pista: {{ partido.nombre_pista }}
+            {% endif %}
+        </p> 
         <p>
             {% if  partido.cubierto %}
                 Pista cubierta.
@@ -20,45 +24,88 @@
             {% endif %}
         </p>
         <hr>
-        
+        {% if partido.creador %}
+            <p>Creado por {{ partido.creador }}</p>
+        {% endif %}
         {% if administradores %}
-        <p>Organizador/es:</p>        
-        {% for item in administradores %}
-            <p>{{ item }}</p>    
-        {% endfor %}
+            <p>Organizador/es:</p>        
+            {% for item in administradores %}
+                <p>{{ item }}</p>    
+            {% endfor %}
         {% else %}
             <p>Aún no hay administradores definidos para este partido.</p>
         {% endif %}
         <hr>
         
-        {% if integrantes_local %}
-            <p>Jugadores del equipo local:</p>        
-            {% for item in integrantes_local %}
-                <p>{{ item }}</p>    
-            {% endfor %}
-        {% else %}
-            <p>No hay jugadores asignados al equipo local.</p>
-        {% endif %}
-        <hr>
+        <div class="card-group">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title">
+                    Equipo local
+                {% if integrantes_local %}
+                        ({{ integrantes_local|length }} / {{ partido.deporte.num_jugadores }})
+                {% else %}
+                        (0)
+                {% endif %}
+                </h4>
+                <p class="card-text">
+                    {% if integrantes_local %}       
+                        {% for item in integrantes_local %}
+                            <p>{{ item }}</p>    
+                        {% endfor %}
+                    {% else %}
+                        <p>No hay jugadores asignados al equipo local.</p>
+                    {% endif %}
+                </p>
+              </div>
+            </div>
+            
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title">
+                    Equipo visitante
+                {% if integrantes_visitantes %}
+                        ({{ integrantes_visitantes|length }} / {{ partido.deporte.num_jugadores }})
+                {% else %}
+                        (0)
+                {% endif %}
+                </h4>
+                <p class="card-text">
+                    {% if integrantes_visitantes %}      
+                        {% for item in integrantes_visitantes %}
+                            <p>{{ item }}</p>    
+                        {% endfor %}
+                    {% else %}
+                        <p>No hay jugadores asignados al equipo visitante.</p>
+                    {% endif %}
+                </p>
+              </div>
+            </div>
+        </div>
         
-        {% if integrantes_visitantes %}
-            <p>Jugadores del equipo visitante:</p>        
-            {% for item in integrantes_visitantes %}
-                <p>{{ item }}</p>    
-            {% endfor %}
-        {% else %}
-            <p>No hay jugadores asignados al equipo visitante.</p>
-        {% endif %}
-        <hr>
+        <br>
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">
+                Jugadores apuntados sin equipo
+            {% if sinequipo %}
+                    ({{ sinequipo|length }})
+            {% else %}
+                    (0)
+            {% endif %}
+            </h4>
+            <p class="card-text">
+                {% if sinequipo %}
+                    {% for item in sinequipo %}
+                        <p>{{ item }}</p>    
+                    {% endfor %}
+                {% else %}
+                    <p>No hay jugadores sin equipo asignado.</p>
+                {% endif %}
+                </p>
+          </div>
+        </div>
         
-        {% if sinequipo %}
-            <p>Jugadores apuntados pero sin equipo:</p>        
-            {% for item in sinequipo %}
-                <p>{{ item }}</p>    
-            {% endfor %}
-        {% else %}
-            <p>No hay jugadores sin equipo asignado.</p>
-        {% endif %}
         <hr>
     {% else %}
         <p>No hay ningún partido con ese identificador</p>

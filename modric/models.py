@@ -1,3 +1,6 @@
+from django.core.exceptions import ValidationError
+from django.db.models.signals import m2m_changed
+from django.dispatch import receiver
 from django.db import models
 from accounts.models import CustomUser
 
@@ -21,12 +24,15 @@ class Comunidad(models.Model):
 # Create your models here.
 class Deporte(models.Model):
     nombre = models.CharField(max_length=60, unique=True)
-    num_jugadores = models.IntegerField(default=1)
+    num_jugadores = models.IntegerField(default=1, verbose_name="Jugadores por equipo") # Jugadores por equipo
     duracion_base = models.IntegerField(default=60) # Duración del encuentro en minutos típicos al alquilar una pista
 
     def __str__(self):
         return self.nombre
 
+    @property
+    def num_total(self):
+        return self.num_jugadores*2
 
 class Recinto(models.Model):
     nombre = models.CharField(max_length=60)
@@ -87,8 +93,53 @@ class Partido(models.Model):
     visibilidad = models.CharField(max_length=1, choices=visibilidad_choices, default='A', verbose_name='Visibilidad')
     comunidad = models.ForeignKey(Comunidad, on_delete=models.CASCADE, null=True)
 
+    def clean(self):
+        super().clean()
+        pass
+
     def __str__(self):
+        self.clean()
         return f"Partido de {self.deporte} el {self.fecha}"
+
+
+# Señal para validar los campos ManyToMany
+@receiver(m2m_changed, sender=Partido.integrantes_local.through)
+def validate_integrantes_local(sender, instance, action, **kwargs):
+    if action == 'pre_add':
+        for pk in kwargs['pk_set']:
+            user = CustomUser.objects.get(pk=pk)
+            if user not in instance.integrantes.all():
+                raise ValidationError(f'El usuario {user} debe ser parte de los integrantes.')
+
+
+@receiver(m2m_changed, sender=Partido.integrantes_visitante.through)
+def validate_integrantes_visitante(sender, instance, action, **kwargs):
+    if action == 'pre_add':
+        for pk in kwargs['pk_set']:
+            user = CustomUser.objects.get(pk=pk)
+            if user not in instance.integrantes.all():
+                raise ValidationError(f'El usuario {user} debe ser parte de los integrantes.')
+
+
+@receiver(m2m_changed, sender=Partido.integrantes_local.through)
+def validate_no_duplicate_integrantes(sender, instance, action, **kwargs):
+    if action == 'pre_add':
+        for pk in kwargs['pk_set']:
+            user = CustomUser.objects.get(pk=pk)
+            if user in instance.integrantes_visitante.all():
+                raise ValidationError(f'El usuario {user} no puede estar en ambos equipos.')
+
+
+@receiver(m2m_changed, sender=Partido.integrantes_visitante.through)
+def validate_no_duplicate_integrantes(sender, instance, action, **kwargs):
+    if action == 'pre_add':
+        for pk in kwargs['pk_set']:
+            user = CustomUser.objects.get(pk=pk)
+            if user in instance.integrantes_local.all():
+                raise ValidationError(f'El usuario {user} no puede estar en ambos equipos.')
+
+
+
 
 # Para ver los participantes
 # partido = Partido.objects.get(id=1)

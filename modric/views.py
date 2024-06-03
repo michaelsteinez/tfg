@@ -1,6 +1,7 @@
 from datetime import date, datetime, timedelta
 from django.utils import timezone
 from django.utils.timezone import make_aware
+from django.core.exceptions import ValidationError
 from random import randint
 
 from django.contrib.auth.decorators import login_required
@@ -10,7 +11,7 @@ import requests
 from modric.models import Partido, Recinto, Comunidad
 from .forms import PartidoForm
 from accounts.models import CustomUser
-import time
+
 # Importamos Q para combinar las condiciones de los filtros en las querysets
 from django.db.models import Q
 
@@ -54,20 +55,22 @@ def editar_partido(request, pk):
         if request.method == 'POST':
             form = PartidoForm(request.POST, instance=partido)
             if form.is_valid():
-                partido = form.save(commit=False)
-                partido.creador = request.user
+                try:
+                    partido = form.save(commit=False)
+                    partido.creador = request.user
 
-                # Combina fecha y hora en un solo campo
-                fecha = form.cleaned_data['fecha']
-                hora = form.cleaned_data['hora']
-                fecha_hora = datetime.combine(fecha, hora)
+                    # Combina fecha y hora en un solo campo
+                    fecha = form.cleaned_data['fecha']
+                    hora = form.cleaned_data['hora']
+                    fecha_hora = datetime.combine(fecha, hora)
+                    partido.fecha = make_aware(fecha_hora)
 
-                # Asegúrate de que el datetime es consciente de la zona horaria
-                partido.fecha = make_aware(fecha_hora)
-
-                partido.save()
-                form.save_m2m()  # Para guardar los campos ManyToMany
-                return redirect('modric:index')  # Asegúrate de que 'modric:index' sea el nombre correcto de tu URL de éxito
+                    partido.full_clean()  # Llama a clean() para las validaciones del modelo
+                    partido.save()
+                    form.save_m2m()  # Para guardar los campos ManyToMany
+                    return redirect('modric:detalle_partido', pk=pk)
+                except ValidationError as e:
+                    form.add_error(None, e)  # Agregar errores al formulario
         else:
             # Inicializar el formulario con los valores actuales del partido
             initial_data = {
@@ -183,6 +186,34 @@ def detalle_recinto(request, pk):
         'recinto': recinto,
         'deportes': deportes,
     })
+
+
+# Recibe objetos, no indices. Devuelve True si el jugador está entre los integrantes del partido.
+def comprobar_jugador_partido(request, usuario, partido):
+    if usuario in partido.integrantes.all():
+        return True
+    else:
+        return False
+
+
+# Devuelve True si el jugador se ha inscrito en el partido
+def partido_in(request, usuario_id, partido_id):
+    partido = Partido.objects.get(pk=partido_id)
+    usuario = CustomUser.objects.get(pk=usuario_id)
+
+    partido.integrantes.add(usuario)
+
+    return comprobar_jugador_partido(request, usuario, partido)
+
+
+# Devuelve True si el jugador se ha borrado del partido
+def partido_out(request, usuario_id, partido_id):
+    partido = Partido.objects.get(pk=partido_id)
+    usuario = CustomUser.objects.get(pk=usuario_id)
+
+    partido.integrantes.remove(usuario)
+
+    return not comprobar_jugador_partido(request, usuario, partido)
 
 
 @login_required
