@@ -18,7 +18,7 @@
     <h1>Tus partidos</h1>
     <p>Estos son todos tus partidos, <i>{{ usuario.username }}</i>.</p>
     <br>
-    <H4>Partidos de hoy {% now "" %}:</H4>
+    <H4>Tus partidos de hoy {% now "" %}:</H4>
     {% if partidos_hoy %}
         <table class="table table-hover">
             <thead>
@@ -30,10 +30,16 @@
             </thead>
             <tbody>
             {% for item in partidos_hoy %}
-                <tr>
+                <tr {% if item.id not in lista_no_inscritos %}
+                            class="bg-warning"
+                        {% endif %}
+                >
                     <td>
                         <a href="{% url 'modric:detalle_partido' item.id %}">
                         {{ item.fecha|date:"l"|capfirst }}, {{ item.fecha }}</a>
+                        {% if item.id not in lista_no_inscritos %}
+                            <i>(Eres el creador pero no estás inscrito)</i>
+                        {% endif %}
                     </td>
                     <td>{{ item.deporte }}</td>
                     <td>
@@ -48,7 +54,7 @@
     {% endif %}
     <br>    
     {% if partidos_futuros %}
-        <H4>Próximos partidos:</H4>
+        <H4>Tus próximos partidos:</H4>
             <table class="table table-hover">
                 <thead>
                   <tr>
@@ -59,10 +65,16 @@
                 </thead>
                 <tbody>
                 {% for item in partidos_futuros %}
-                <tr>
+                <tr {% if item.id not in lista_no_inscritos %}
+                            class="bg-warning"
+                        {% endif %}
+                >
                     <td>
                         <a href="{% url 'modric:detalle_partido' item.id %}">
                         {{ item.fecha|date:"l"|capfirst }}, {{ item.fecha }}</a>
+                        {% if item.id not in lista_no_inscritos %}
+                            <i>(Eres el creador pero no estás inscrito)</i>
+                        {% endif %}
                     </td>
                     <td>{{ item.deporte }}</td>
                     <td>

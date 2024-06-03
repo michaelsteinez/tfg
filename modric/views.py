@@ -84,6 +84,9 @@ def editar_partido(request, pk):
         return redirect('modric:detalle_partido', pk)
 
 
+def comprobar_inscripcion(usuario, partido):
+    return usuario in partido.integrantes.all()
+
 @login_required
 def detalle_partido(request, pk):
     # Las dos asignaciones son equivalentes pero la segunda reenvia a Not Found
@@ -94,6 +97,9 @@ def detalle_partido(request, pk):
     integrantes_local = partido.integrantes_local.all()
     integrantes_visitantes = partido.integrantes_visitante.all()
     sinequipo = partido.integrantes.all()
+
+    # Hay que controlar también que el partido no haya pasado y que no falte menos de un tiempo mínimo
+    inscrito = comprobar_inscripcion(request.user, partido)
 
     # Comprobamos si el usuario es organizador o creador para ofrecerle editarlo
     edicion = request.user in administradores or request.user == partido.creador
@@ -108,13 +114,16 @@ def detalle_partido(request, pk):
     # Convertimos el conjunto resultante de nuevo a QuerySet (o lista)
     sinequipo = list(sinequipo)
 
+
+
     return render(request, 'modric/detalle_partido.html', {
         'partido': partido,
         'administradores': administradores,
         'integrantes_local': integrantes_local,
         'integrantes_visitantes': integrantes_visitantes,
         'sinequipo': sinequipo,
-        'edicion': edicion
+        'edicion': edicion,
+        'inscrito': inscrito,
     })
 
 
@@ -145,11 +154,17 @@ def listar_partidos(request):
         Q(integrantes=usuario) | Q(creador=usuario)
     ).distinct().order_by('fecha')
 
+    lista_no_inscritos = []
+    for partido in partidos_futuros:
+        if comprobar_inscripcion(request.user, partido):
+            lista_no_inscritos.append(partido.id)
+
     return render(request, 'modric/listar_partidos.html', {
         "partidos_anteriores": partidos_anteriores,
         "partidos_hoy": partidos_hoy,
         "partidos_futuros": partidos_futuros,
-        "usuario": usuario
+        "usuario": usuario,
+        "lista_no_inscritos": lista_no_inscritos,
     })
 
 

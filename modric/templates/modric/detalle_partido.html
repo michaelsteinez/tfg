@@ -14,7 +14,7 @@
             <strong>Deporte:</strong> {{ partido.deporte }}
         </div>
         <div class="mb-3">
-            <strong>Fecha:</strong> {{ partido.fecha }}
+            <strong>Fecha:</strong> {{ partido.fecha|date:"l"|capfirst }}, {{ partido.fecha }}
         </div>
         <div class="mb-3">
             <strong>Duración:</strong> {{ partido.duracion_personalizada }} minutos
@@ -133,6 +133,13 @@
     {% endif %}
     
     <div class="mt-4">
+        <p>
+        {% if inscrito  %}
+            <a href="" class="btn btn-danger">Borrarse</a>
+        {% else %}
+            <a href="" class="btn btn-success">Apuntarse</a>
+        {% endif %}
+        </p>
         <p>
             <a href="{% url 'modric:buscar_partidos' %}" class="btn btn-secondary">Volver a buscar partidos</a>
             <a href="{% url 'modric:ver_partidos' %}" class="btn btn-secondary">Volver a lista de partidos</a>
