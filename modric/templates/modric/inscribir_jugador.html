@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+    
+    <p>El jugador {{ jugador.username }} se ha 
+    {% if sentido %}
+        inscrito en el 
+    {% else %}
+        borrado del 
+    {% endif %}
+    <a href="{% url 'modric:detalle_partido' partido.id %}">partido</a>.
+    </p>
+    
+{% endblock %}

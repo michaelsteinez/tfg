@@ -114,6 +114,12 @@ def detalle_partido(request, pk):
     # Convertimos el conjunto resultante de nuevo a QuerySet (o lista)
     sinequipo = list(sinequipo)
 
+    usuario = request.user
+
+    # Si es un partido de ayer o anterior, no puede apuntarse.
+    apuntable = True
+    if partido.fecha.date() < timezone.now().date():
+        apuntable = False
 
 
     return render(request, 'modric/detalle_partido.html', {
@@ -124,6 +130,8 @@ def detalle_partido(request, pk):
         'sinequipo': sinequipo,
         'edicion': edicion,
         'inscrito': inscrito,
+        'usuario': usuario,
+        'apuntable': apuntable,
     })
 
 
@@ -203,32 +211,67 @@ def detalle_recinto(request, pk):
     })
 
 
-# Recibe objetos, no indices. Devuelve True si el jugador está entre los integrantes del partido.
-def comprobar_jugador_partido(request, usuario, partido):
-    if usuario in partido.integrantes.all():
-        return True
+def partido_in_out(usuario, partido, sentido):
+    if sentido:
+        partido.integrantes.add(usuario)
     else:
-        return False
+        partido.integrantes.remove(usuario)
+        if usuario in partido.integrantes_local.all():
+            partido.integrantes_local.remove(usuario)
+        elif usuario in partido.integrantes_visitantes.all():
+            partido.integrantes_visitantes.remove(usuario)
+
+    return usuario in partido.integrantes.all()
 
 
-# Devuelve True si el jugador se ha inscrito en el partido
-def partido_in(request, usuario_id, partido_id):
+
+def jugador_partido(request):
+    partido_id = request.POST['partido_id']
+    usuario_id = request.POST['usuario_id']
+    sentido = request.POST['sentido']
     partido = Partido.objects.get(pk=partido_id)
     usuario = CustomUser.objects.get(pk=usuario_id)
+    if sentido == 'in':
+        sentido = True
+    elif sentido == 'out':
+        sentido = False
+    else:
+        redirect('modric:detalle_partido', pk=partido.id)
 
-    partido.integrantes.add(usuario)
+    partido_in_out(usuario, partido, sentido)
 
-    return comprobar_jugador_partido(request, usuario, partido)
+    return render(request, 'modric/inscribir_jugador.html', {
+        'partido': partido,
+        'jugador': usuario,
+        'sentido': sentido
+    })
 
-
-# Devuelve True si el jugador se ha borrado del partido
-def partido_out(request, usuario_id, partido_id):
-    partido = Partido.objects.get(pk=partido_id)
-    usuario = CustomUser.objects.get(pk=usuario_id)
-
-    partido.integrantes.remove(usuario)
-
-    return not comprobar_jugador_partido(request, usuario, partido)
+# # Recibe objetos, no indices. Devuelve True si el jugador está entre los integrantes del partido.
+# def comprobar_jugador_partido(usuario, partido):
+#     if usuario in partido.integrantes.all():
+#         return True
+#     else:
+#         return False
+#
+#
+# # Devuelve True si el jugador se ha inscrito en el partido
+# def partido_in(usuario_id, partido_id):
+#     partido = Partido.objects.get(pk=partido_id)
+#     usuario = CustomUser.objects.get(pk=usuario_id)
+#
+#     partido.integrantes.add(usuario)
+#
+#     return comprobar_jugador_partido(usuario, partido)
+#
+#
+# # Devuelve True si el jugador se ha borrado del partido
+# def partido_out(usuario_id, partido_id):
+#     partido = Partido.objects.get(pk=partido_id)
+#     usuario = CustomUser.objects.get(pk=usuario_id)
+#
+#     partido.integrantes.remove(usuario)
+#
+#     return not comprobar_jugador_partido(usuario, partido)
 
 
 @login_required
