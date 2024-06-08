@@ -4,8 +4,106 @@
     <h1>Editar Partido</h1>
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Guardar cambios</button>
+        <div class="row">
+            <div class="col-md">
+                {{ form.deporte.label_tag }}
+                {{ form.deporte }}
+            </div>
+            <div class="col-md">
+                {{ form.fecha.label_tag }}
+                {{ form.fecha }}
+            </div>
+            <div class="col-md">
+                {{ form.hora.label_tag }}
+                {{ form.hora }}
+            </div>
+            <div class="col-md">
+                {{ form.duracion_personalizada.label_tag }}
+                {{ form.duracion_personalizada }}
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-md-3">
+                {{ form.recinto.label_tag }}
+                {{ form.recinto }}
+            </div>
+            <div class="col-md">
+                {{ form.nombre_pista.label_tag }}
+                {{ form.nombre_pista }}
+            </div>
+            <div class="col-md-2">
+                <br>
+                <p>
+                    {{ form.cubierto.label_tag }}
+                    {{ form.cubierto }}
+                </p>
+            </div>
+            <div class="col-md">
+                {{ form.precio_pista.label_tag }}
+                {{ form.nombre_pista }}
+            </div>
+            <div class="col-md">
+                {{ form.precio_jugador.label_tag }}
+                {{ form.precio_jugador}}
+            </div>            
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-md">
+                {{ form.administradores.label_tag }}
+                {{ form.administradores }}
+            </div> 
+            <div class="col-md">
+                {{ form.integrantes.label_tag }}
+                {{ form.integrantes }}
+            </div>
+            <div class="col-md">
+                {{ form.integrantes_local.label_tag }}
+                {{ form.integrantes_local }}
+            </div>
+            <div class="col-md">
+                {{ form.integrantes_visitante.label_tag }}
+                {{ form.integrantes_visitante }}
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-md-4">
+                {{ form.comunidad.label_tag }}
+                {{ form.comunidad }}
+            </div>
+            <div class="col-md">
+                {{ form.visibilidad.label_tag }}
+                {{ form.visibilidad }}
+            </div>
+            <div class="col-md">
+                {{ form.color_local.label_tag }}
+                {{ form.color_local }}
+            </div> 
+            <div class="col-md">
+                {{ form.color_visitante.label_tag }}
+                {{ form.color_visitante }}
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-md">
+                {{ form.resultado_estado.label_tag }}
+                {{ form.resultado_estado }}
+            </div>
+            <div class="col-md">
+                {{ form.marcador_local.label_tag }}
+                {{ form.marcador_local }}
+            </div>
+            <div class="col-md">
+                {{ form.marcador_visitante.label_tag }}
+                {{ form.marcador_visitante }}
+            </div>
+        </div>
+        <hr>
+        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        <a href="{% url 'modric:index' %}" class="btn btn-secondary ms-2">Volver</a>
     </form>
-    <a href="{% url 'modric:index' %}">Volver</a>
 {% endblock %}
+

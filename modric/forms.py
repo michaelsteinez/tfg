@@ -19,6 +19,17 @@ class PartidoForm(forms.ModelForm):
         partido = kwargs.get('instance')
         super(PartidoForm, self).__init__(*args, **kwargs)
 
+        for field_name, field in self.fields.items():
+            if isinstance(field.widget, forms.CheckboxInput):
+                field.widget.attrs['class'] = 'form-check-input'
+                field.label_suffix = ''
+                self.fields[field_name].widget = forms.CheckboxInput(attrs={'class': 'form-check-input'})
+            else:
+                if field.widget.attrs.get('class'):
+                    field.widget.attrs['class'] += ' form-control'
+                else:
+                    field.widget.attrs['class'] = 'form-control'
+
         if partido:
             # Filtrar los usuarios que forman parte de 'integrantes'
             self.fields['integrantes_local'].queryset = partido.integrantes.all()
