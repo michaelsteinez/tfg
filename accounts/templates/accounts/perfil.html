@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Editar Perfil</h2>
+  <form method="post">
+    {% csrf_token %}
+            <div class="input-group col-md">
+                <span class="input-group-text">@</span>{{ form.username }}
+            </div>
+            <div class="input-group col-md">
+                <span class="input-group-text">{{ form.email.label_tag }}</span>
+                {{ form.email }}
+            </div>
+      <br>
+            <div class="row">
+            <div class="col-md-4">
+                {{ form.altura.label_tag }}
+                {{ form.altura }}
+            </div>
+            <div class="col-md-4">
+                {{ form.fecha_nac.label_tag }}
+                {{ form.fecha_nac }}
+            </div>
+            <div class="col-md-4">
+                {{ form.sexo.label_tag }}
+                {{ form.sexo }}
+            </div>
+            </div>
+      <br>
+    <button type="submit" class="btn btn-info">Guardar cambios</button>
+    <button type="button" class="btn btn-danger" onclick="window.location.href='{% url 'modric:index' %}'">Cancelar cambios</button>
+  </form>
+{% endblock %}

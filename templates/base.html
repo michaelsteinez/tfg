@@ -44,7 +44,7 @@
                   <a class="nav-link link-light" href="{% url 'modric:buscar_partidos' %}">Buscar</a>
               </li>
               <li class="nav-item ms-auto">
-                <span class="nav-link link-light">Bienvenido/a {{ user.get_username }}</span>
+                <a class="nav-link link-light" href="{% url 'accounts:perfil' %}">Bienvenido/a {{ user.get_username }}</a>
               </li>
               <li class="nav-item">
                   <a class="nav-link link-light" href="{% url 'logout' %}">Cerrar sesión</a>

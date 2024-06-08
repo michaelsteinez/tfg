@@ -98,7 +98,6 @@ def detalle_partido(request, pk):
     integrantes_visitantes = partido.integrantes_visitante.all()
     sinequipo = partido.integrantes.all()
 
-    # Hay que controlar también que el partido no haya pasado y que no falte menos de un tiempo mínimo
     inscrito = comprobar_inscripcion(request.user, partido)
 
     # Comprobamos si el usuario es organizador o creador para ofrecerle editarlo
@@ -218,8 +217,8 @@ def partido_in_out(usuario, partido, sentido):
         partido.integrantes.remove(usuario)
         if usuario in partido.integrantes_local.all():
             partido.integrantes_local.remove(usuario)
-        elif usuario in partido.integrantes_visitantes.all():
-            partido.integrantes_visitantes.remove(usuario)
+        elif usuario in partido.integrantes_visitante.all():
+            partido.integrantes_visitante.remove(usuario)
 
     return usuario in partido.integrantes.all()
 

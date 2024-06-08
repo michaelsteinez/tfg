@@ -54,8 +54,8 @@ class Partido(models.Model):
     recinto = models.ForeignKey(Recinto, on_delete=models.CASCADE)
     nombre_pista = models.CharField(max_length=60, blank=True, verbose_name='Número de pista')  # Pista dentro del recinto
     cubierto = models.BooleanField(default=False)  # A la intemperie o no
-    precio_pista = models.FloatField(default=0, verbose_name='Precio total')
-    precio_jugador = models.FloatField(default=0, verbose_name='Precio por jugador')
+    precio_pista = models.FloatField(default=0, verbose_name='Precio total', blank=True, null=True)
+    precio_jugador = models.FloatField(default=0, verbose_name='Precio por jugador', blank=True, null=True)
 
     creador = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)
     administradores = models.ManyToManyField(CustomUser, related_name='administradores_partido', verbose_name='Organizadores')
