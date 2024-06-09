@@ -25,14 +25,14 @@ class PartidoAdmin(admin.ModelAdmin):
 
 
 class ComunidadAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'fecha_creacion')
+    list_display = ('nombre', 'creador', 'fecha_creacion')
     ordering = ('fecha_creacion', 'nombre')
     fieldsets = (
         (None, {'fields': ('fecha_creacion', 'creador', 'nombre')}),
         ('Información adicional', {'fields': ('descripcion', 'escudo')}),
         ('Organización', {'fields': ('administradores', 'miembros')}),
     )
-    readonly_fields = ('fecha_creacion',)
+    readonly_fields = ('fecha_creacion', 'creador')
 
 
 admin.site.register(Deporte, DeporteAdmin)

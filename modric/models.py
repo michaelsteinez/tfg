@@ -9,8 +9,7 @@ class Comunidad(models.Model):
     nombre = models.CharField(max_length=100, unique=True)
     escudo = models.ImageField(upload_to='comunidades/', blank=True)
     descripcion = models.TextField(blank=True)
-    creador = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='creador_comunidad',
-                                null=True, blank=True)
+    creador = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='creador_comunidad')
     fecha_creacion = models.DateField(auto_now_add=True)
     administradores = models.ManyToManyField(CustomUser, related_name='administradores_comunidad')
     miembros = models.ManyToManyField(CustomUser, related_name='miembros_comunidad')
