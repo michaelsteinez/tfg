@@ -96,6 +96,7 @@
                 <th>Fecha</th>
                 <th>Deporte</th>
                 <th>Recinto</th>
+                <th>Resultado</th>
               </tr>
             </thead>
             <tbody>
@@ -108,6 +109,9 @@
                     <td>{{ item.deporte }}</td>
                     <td>
                         <a href="{% url 'modric:recinto' item.recinto.id %}">{{ item.recinto }}</a>
+                    </td>
+                    <td>
+                        {{ item.get_resultado_estado_display }} ({{ item.marcador_local }} - {{ item.marcador_visitante }})
                     </td>
                 </tr>
             {% endfor %}

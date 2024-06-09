@@ -152,6 +152,18 @@
                     <button type="submit" class="btn btn-success">Apuntarse</button>
                 </form>
             {% endif %}
+    {% else %}
+        <div class="card">
+            <div class="card-body text-center">
+                <h4 class="card-title">Resultado final</h4>
+                <div class="alert alert-info" role="alert">
+                    {{ partido.get_resultado_estado_display }}
+                </div>
+                <div class="card-text fs-4 fw-bold">
+                    {{ partido.marcador_local }} - {{ partido.marcador_visitante }}
+                </div>
+            </div>
+        </div>
     {% endif %}
     </p>
         <p>

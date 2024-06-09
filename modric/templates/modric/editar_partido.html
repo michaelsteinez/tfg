@@ -4,6 +4,17 @@
     <h1>Editar Partido</h1>
     <form method="post">
         {% csrf_token %}
+        
+        <!-- Mostrar errores del formulario -->
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        
         <div class="row">
             <div class="col-md">
                 {{ form.deporte.label_tag }}
@@ -42,7 +53,7 @@
             </div>
             <div class="col-md">
                 {{ form.precio_pista.label_tag }}
-                {{ form.nombre_pista }}
+                {{ form.precio_pista }}
             </div>
             <div class="col-md">
                 {{ form.precio_jugador.label_tag }}
@@ -104,7 +115,7 @@
         </div>
         <hr>
         <button type="submit" class="btn btn-primary">Guardar cambios</button>
-        <a href="{% url 'modric:index' %}" class="btn btn-secondary ms-2">Volver</a>
+        <a href="{% url 'modric:detalle_partido' partido.pk %}" class="btn btn-secondary ms-2">Volver</a>
     </form>
 {% endblock %}
 
