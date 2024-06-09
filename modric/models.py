@@ -9,6 +9,8 @@ class Comunidad(models.Model):
     nombre = models.CharField(max_length=100, unique=True)
     escudo = models.ImageField(upload_to='comunidades/', blank=True)
     descripcion = models.TextField(blank=True)
+    creador = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='creador_comunidad',
+                                null=True, blank=True)
     fecha_creacion = models.DateField(auto_now_add=True)
     administradores = models.ManyToManyField(CustomUser, related_name='administradores_comunidad')
     miembros = models.ManyToManyField(CustomUser, related_name='miembros_comunidad')
@@ -19,6 +21,15 @@ class Comunidad(models.Model):
 
     def __str__(self):
         return self.nombre
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if not self.administradores.filter(id=self.creador.id).exists():
+            self.administradores.add(self.creador)
+
+    def clean(self):
+        if self.administradores.count() == 0:
+            raise ValidationError('La comunidad debe tener al menos un administrador.')
 
 
 # Create your models here.

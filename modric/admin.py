@@ -28,7 +28,7 @@ class ComunidadAdmin(admin.ModelAdmin):
     list_display = ('nombre', 'fecha_creacion')
     ordering = ('fecha_creacion', 'nombre')
     fieldsets = (
-        (None, {'fields': ('fecha_creacion', 'nombre')}),
+        (None, {'fields': ('fecha_creacion', 'creador', 'nombre')}),
         ('Información adicional', {'fields': ('descripcion', 'escudo')}),
         ('Organización', {'fields': ('administradores', 'miembros')}),
     )
