@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Solicitar unirse a {{ comunidad.nombre }}</h2>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Solicitar</button>
+  </form>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Invitaciones enviadas</h2>
+  <ul>
+    {% for invitacion in invitaciones %}
+      <li>
+        {{ invitacion.usuario.username }} - {{ invitacion.comunidad.nombre }} - {{ invitacion.get_estado_display }} - {{ invitacion.fecha_invitacion }}
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Partido, CustomUser
+from .models import Partido, Invitacion
 
 
 class PartidoForm(forms.ModelForm):
@@ -34,3 +34,9 @@ class PartidoForm(forms.ModelForm):
             # Filtrar los usuarios que forman parte de 'integrantes'
             self.fields['integrantes_local'].queryset = partido.integrantes.all()
             self.fields['integrantes_visitante'].queryset = partido.integrantes.all()
+
+
+class InvitacionForm(forms.ModelForm):
+    class Meta:
+        model = Invitacion
+        fields = ['comunidad', 'usuario']

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Comunidad: {{ comunidad.nombre }}</h2>
+  <p><strong>Descripción:</strong> {{ comunidad.descripcion }}</p>
+  <p><strong>Creada por:</strong> {{ comunidad.creador.username }} el {{ comunidad.fecha_creacion }}</p>
+  <p><strong>Administradores:</strong></p>
+  <ul>
+    {% for admin in comunidad.administradores.all %}
+      <li>{{ admin.username }}</li>
+    {% endfor %}
+  </ul>
+  <p><strong>Miembros:</strong></p>
+  <ul>
+    {% for miembro in comunidad.miembros.all %}
+      <li>{{ miembro.username }}</li>
+    {% endfor %}
+  </ul>
+  <h3>Solicitudes e Invitaciones</h3>
+  <ul>
+    {% for invitacion in invitaciones %}
+      <li>
+        {{ invitacion.usuario.username }} - {{ invitacion.get_estado_display }} - {{ invitacion.fecha_invitacion }}
+      </li>
+    {% endfor %}
+  </ul>
+  <a href="{% url 'modric:solicitar_membresia' comunidad.id %}">Solicitar membresía</a>
+{% endblock %}

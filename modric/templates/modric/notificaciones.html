@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Notificaciones</h2>
+  <ul>
+    {% for notificacion in notificaciones %}
+      <li {% if not notificacion.leido %} style="font-weight: bold;" {% endif %}>
+        {{ notificacion.mensaje }} - {{ notificacion.fecha_notificacion }}
+        {% if not notificacion.leido %}
+          <form method="post" style="display:inline;">
+            {% csrf_token %}
+            <input type="hidden" name="notificacion_id" value="{{ notificacion.id }}">
+            <button type="submit">Marcar como leída</button>
+          </form>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

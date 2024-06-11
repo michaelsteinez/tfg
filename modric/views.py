@@ -8,8 +8,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 import requests
 
-from modric.models import Partido, Recinto, Comunidad
-from .forms import PartidoForm
+from modric.models import Partido, Recinto, Comunidad, Invitacion, Notificacion
+from .forms import PartidoForm, InvitacionForm
 from accounts.models import CustomUser
 
 # Importamos Q para combinar las condiciones de los filtros en las querysets
@@ -86,6 +86,7 @@ def editar_partido(request, pk):
 
 def comprobar_inscripcion(usuario, partido):
     return usuario in partido.integrantes.all()
+
 
 @login_required
 def detalle_partido(request, pk):
@@ -244,6 +245,87 @@ def jugador_partido(request):
         'jugador': usuario,
         'sentido': sentido
     })
+
+
+@login_required
+def enviar_invitacion(request):
+    if request.method == 'POST':
+        form = InvitacionForm(request.POST)
+        if form.is_valid():
+            invitacion = form.save()
+            Notificacion.objects.create(
+                usuario=invitacion.usuario,
+                mensaje=f'Has sido invitado a unirte a la comunidad {invitacion.comunidad.nombre}.'
+            )
+            return redirect('modric:invitaciones_enviadas')
+    else:
+        form = InvitacionForm()
+    return render(request, 'modric/enviar_invitacion.html', {'form': form})
+
+
+@login_required
+def solicitar_membresia(request, comunidad_id):
+    comunidad = get_object_or_404(Comunidad, id=comunidad_id)
+    if request.method == 'POST':
+        invitacion, created = Invitacion.objects.get_or_create(comunidad=comunidad, usuario=request.user)
+        if created:
+            Notificacion.objects.create(
+                usuario=invitacion.comunidad.creador,
+                mensaje=f'{request.user.username} ha solicitado unirse a la comunidad {invitacion.comunidad.nombre}.'
+            )
+        return redirect('modric:detalle_comunidad', comunidad_id=comunidad_id)
+    return render(request, 'modric/solicitar_membresia.html', {'comunidad': comunidad})
+
+
+@login_required
+def manejar_solicitudes(request):
+    invitaciones = Invitacion.objects.filter(comunidad__administradores=request.user, estado=Invitacion.PENDIENTE)
+    if request.method == 'POST':
+        invitacion_id = request.POST.get('invitacion_id')
+        action = request.POST.get('action')
+        invitacion = get_object_or_404(Invitacion, id=invitacion_id)
+        if action == 'aceptar':
+            invitacion.estado = Invitacion.ACEPTADA
+            invitacion.comunidad.miembros.add(invitacion.usuario)
+            Notificacion.objects.create(
+                usuario=invitacion.usuario,
+                mensaje=f'Tu solicitud de unirte a la comunidad {invitacion.comunidad.nombre} ha sido aceptada.'
+            )
+        elif action == 'rechazar':
+            invitacion.estado = Invitacion.RECHAZADA
+            Notificacion.objects.create(
+                usuario=invitacion.usuario,
+                mensaje=f'Tu solicitud de unirte a la comunidad {invitacion.comunidad.nombre} ha sido denegada.'
+            )
+        invitacion.save()
+        return redirect('modric:manejar_solicitudes')
+    return render(request, 'modric/manejar_solicitudes.html', {'invitaciones': invitaciones})
+
+
+@login_required
+def invitaciones_enviadas(request):
+    invitaciones = Invitacion.objects.filter(comunidad__administradores=request.user)
+    return render(request, 'modric/invitaciones_enviadas.html', {'invitaciones': invitaciones})
+
+
+
+@login_required
+def notificaciones(request):
+    notificaciones = Notificacion.objects.filter(usuario=request.user).order_by('-fecha')
+    if request.method == 'POST':
+        notification_id = request.POST.get('notification_id')
+        notification = get_object_or_404(Notificacion, id=notification_id)
+        notification.leido = True
+        notification.save()
+        return redirect('notificaciones')
+    return render(request, 'modric/notificaciones.html', {'notificaciones': notificaciones})
+
+
+@login_required
+def detalle_comunidad(request, comunidad_id):
+    comunidad = get_object_or_404(Comunidad, id=comunidad_id)
+    invitaciones = Invitacion.objects.filter(comunidad=comunidad)
+    return render(request, 'modric/detalle_comunidad.html', {'comunidad': comunidad, 'invitaciones': invitaciones})
 
 # # Recibe objetos, no indices. Devuelve True si el jugador está entre los integrantes del partido.
 # def comprobar_jugador_partido(usuario, partido):

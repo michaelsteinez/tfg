@@ -16,22 +16,44 @@ class Comunidad(models.Model):
 
     class Meta:
         verbose_name = 'Comunidad'
-        verbose_name_plural ='Comunidades'
+        verbose_name_plural = 'Comunidades'
 
     def __str__(self):
         return self.nombre
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        if not self.administradores.filter(id=self.creador.id).exists():
-            self.administradores.add(self.creador)
 
-    def clean(self):
-        if self.administradores.count() == 0:
-            raise ValidationError('La comunidad debe tener al menos un administrador.')
+class Invitacion(models.Model):
+    PENDIENTE = 'P'
+    ACEPTADA = 'A'
+    RECHAZADA = 'R'
+    STATUS_CHOICES = [
+        (PENDIENTE, 'Pendiente'),
+        (ACEPTADA, 'Aceptada'),
+        (RECHAZADA, 'Rechazada'),
+    ]
+
+    comunidad = models.ForeignKey(Comunidad, on_delete=models.CASCADE, related_name='invitaciones')
+    usuario = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='invitaciones')
+    fecha = models.DateTimeField(auto_now_add=True)
+    estado = models.CharField(max_length=1, choices=STATUS_CHOICES, default=PENDIENTE)
+
+    class Meta:
+        unique_together = ('comunidad', 'usuario')
+
+    def __str__(self):
+        return f'{self.usuario.username} - {self.comunidad.nombre} - {self.get_estado_display()}'
 
 
-# Create your models here.
+class Notificacion(models.Model):
+    usuario = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='notificaciones')
+    mensaje = models.TextField()
+    leido = models.BooleanField(default=False)
+    fecha = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Notificacion para {self.usuario.username} - {self.leido}'
+
+
 class Deporte(models.Model):
     nombre = models.CharField(max_length=60, unique=True)
     num_jugadores = models.IntegerField(default=1, verbose_name="Jugadores por equipo") # Jugadores por equipo
@@ -43,6 +65,7 @@ class Deporte(models.Model):
     @property
     def num_total(self):
         return self.num_jugadores*2
+
 
 class Recinto(models.Model):
     nombre = models.CharField(max_length=60)
