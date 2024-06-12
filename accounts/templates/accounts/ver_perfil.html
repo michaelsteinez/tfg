@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<h2>Ver Perfil</h2>
+    <div class="card  text-center" style="width:200px">
+      <img class="card-img-top" src="/static/accounts/anonimo.jpg" alt="Card image">
+      <div class="card-body">
+          <h4 class="card-title">{{ usuario.username }}</h4>
+          <p class="card-text">{{ usuario.email }}</p>
+          <p class="card-text">{{ usuario.get_sexo_display }}</p>
+          <p class="card-text">{{ usuario.altura }} cm.</p>
+          <p class="card-text">{{ usuario.fecha_nac|date:"Y" }}</p>
+          <a href="{% url 'accounts:editar_perfil' %}" class="btn btn-primary ">Editar perfil</a>
+      </div>
+    </div>
+{% endblock %}
