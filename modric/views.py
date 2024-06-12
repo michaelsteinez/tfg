@@ -316,11 +316,11 @@ def invitaciones_enviadas(request):
 def notificaciones(request):
     notificaciones = Notificacion.objects.filter(usuario=request.user).order_by('-fecha')
     if request.method == 'POST':
-        notification_id = request.POST.get('notification_id')
-        notification = get_object_or_404(Notificacion, id=notification_id)
-        notification.leido = True
-        notification.save()
-        return redirect('notificaciones')
+        notificacion_id = request.POST.get('notificacion_id')
+        notificacion = get_object_or_404(Notificacion, id=notificacion_id)
+        notificacion.leido = True
+        notificacion.save()
+        return redirect('modric:notificaciones')
     return render(request, 'modric/notificaciones.html', {'notificaciones': notificaciones})
 
 

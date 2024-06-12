@@ -1,6 +1,7 @@
 from django import forms
 
 from .models import Partido, Invitacion, Comunidad
+from accounts.models import CustomUser
 
 
 class PartidoForm(forms.ModelForm):
@@ -45,3 +46,5 @@ class InvitacionForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         super(InvitacionForm, self).__init__(*args, **kwargs)
         self.fields['comunidad'].queryset = Comunidad.objects.filter(administradores=user).order_by('nombre')
+        # Si sobrase tiempo, sería conveniente excluir los miembros de las comunidades seleccionadas en el primer campo
+        self.fields['usuario'].queryset = CustomUser.objects.exclude(id=user.id).order_by('username')
