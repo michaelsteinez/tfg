@@ -3,6 +3,7 @@ from modric.views import (index, crear_partido, buscar_partidos, listar_partidos
                           detalle_partido, editar_partido, detalle_recinto, jugador_partido,
                           enviar_invitacion, manejar_solicitudes, solicitar_membresia, invitaciones_enviadas,
                           notificaciones, detalle_comunidad)
+from modric import views
 
 app_name = 'modric'
 
@@ -24,7 +25,8 @@ urlpatterns = [
     path('solicitar_membresia/<int:comunidad_id>/', solicitar_membresia, name='solicitar_membresia'),
     path('invitaciones_enviadas/', invitaciones_enviadas, name='invitaciones_enviadas'),
     path('notificaciones/', notificaciones, name='notificaciones'),
-    path('detalle_comunidad/<int:comunidad_id>/', detalle_comunidad, name='detalle_comunidad'),
+    path('comunidad/<int:comunidad_id>/', detalle_comunidad, name='detalle_comunidad'),
+    path('comunidades/', views.ComunidadesUsuarioView.as_view(), name='comunidades'),
 
     path('starwars/', importar_usuarios_API, name='importar_starwars'),
 

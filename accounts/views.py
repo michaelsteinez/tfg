@@ -5,7 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 from .models import CustomUser
-
+from modric.models import Comunidad
 
 class SignUpView(CreateView):
     form_class = CustomUserCreationForm
@@ -20,7 +20,7 @@ class VerPerfil(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(*args, **kwargs)
 
         context["usuario"] = self.request.user
-        # context["usuario"] = CustomUser.objects.get(pk=usuario)
+        context["comunidades"] = Comunidad.objects.filter(miembros=self.request.user)
 
         return context
 

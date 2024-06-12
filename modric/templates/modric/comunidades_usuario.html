@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Mis comunidades</h2>
+  <ul>
+    {% for comunidad in comunidades %}
+      <li>
+      {{ comunidad }}
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

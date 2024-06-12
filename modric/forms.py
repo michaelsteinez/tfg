@@ -1,5 +1,6 @@
 from django import forms
-from .models import Partido, Invitacion
+
+from .models import Partido, Invitacion, Comunidad
 
 
 class PartidoForm(forms.ModelForm):
@@ -40,3 +41,7 @@ class InvitacionForm(forms.ModelForm):
     class Meta:
         model = Invitacion
         fields = ['comunidad', 'usuario']
+
+    def __init__(self, user, *args, **kwargs):
+        super(InvitacionForm, self).__init__(*args, **kwargs)
+        self.fields['comunidad'].queryset = Comunidad.objects.filter(administradores=user).order_by('nombre')

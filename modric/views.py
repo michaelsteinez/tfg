@@ -8,6 +8,9 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 import requests
 
+from django.views.generic import ListView
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 from modric.models import Partido, Recinto, Comunidad, Invitacion, Notificacion
 from .forms import PartidoForm, InvitacionForm
 from accounts.models import CustomUser
@@ -259,7 +262,7 @@ def enviar_invitacion(request):
             )
             return redirect('modric:invitaciones_enviadas')
     else:
-        form = InvitacionForm()
+        form = InvitacionForm(user=request.user)
     return render(request, 'modric/enviar_invitacion.html', {'form': form})
 
 
@@ -326,6 +329,14 @@ def detalle_comunidad(request, comunidad_id):
     comunidad = get_object_or_404(Comunidad, id=comunidad_id)
     invitaciones = Invitacion.objects.filter(comunidad=comunidad)
     return render(request, 'modric/detalle_comunidad.html', {'comunidad': comunidad, 'invitaciones': invitaciones})
+
+
+class ComunidadesUsuarioView(LoginRequiredMixin, ListView):
+    template_name = 'modric/comunidades_usuario.html'
+    context_object_name = 'comunidades'
+
+    def get_queryset(self):
+        return Comunidad.objects.filter(miembros=self.request.user)
 
 # # Recibe objetos, no indices. Devuelve True si el jugador está entre los integrantes del partido.
 # def comprobar_jugador_partido(usuario, partido):

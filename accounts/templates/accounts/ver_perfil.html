@@ -13,4 +13,12 @@
           <a href="{% url 'accounts:editar_perfil' %}" class="btn btn-primary ">Editar perfil</a>
       </div>
     </div>
+    <h2>Mis comunidades</h2>
+  <ul>
+    {% for comunidad in comunidades %}
+      <li>
+      <a href="{% url 'modric:detalle_comunidad' comunidad.pk %}">{{ comunidad }}</a>
+      </li>
+    {% endfor %}
+  </ul>
 {% endblock %}
