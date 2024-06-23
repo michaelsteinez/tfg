@@ -1,5 +1,15 @@
 {% extends 'base.html' %}
 {% block content %}
+    <style>
+#ficha-jugador {
+    display: flex;
+    align-items: center;
+}
+
+#ficha-jugador img {
+    margin-right: 10px; /* Ajusta el espacio entre la imagen y el texto */
+}
+</style>
 <div class="container mt-4">
     <h1 class="mb-4">Detalle partido</h1>
     
@@ -70,7 +80,21 @@
                         <ul class="card-text">
                             {% if integrantes_local %}
                                 {% for item in integrantes_local %}
-                                    <li>{{ item }}</li>
+                                    <div id="ficha-jugador" class="shadow p-4 mb-4 bg-white">
+                                        <div>
+                                            <img class="card-img-top rounded" src="
+                                                {% if item.foto %}
+                                                    {{ item.foto.url }}
+                                                {% else %}
+                                                        /static/accounts/anonimo.jpg
+                                                {% endif %}
+                                            " alt="Card image {{ item.username }}" 
+                                                 style="width: 50px; height: 50px; object-fit: cover;">
+                                        </div>
+                                        <div class="ms-3">
+                                            {{ item }}
+                                        </div>
+                                    </div>
                                 {% endfor %}
                             {% else %}
                                 <li>No hay jugadores asignados al equipo local.</li>
@@ -93,7 +117,21 @@
                         <ul class="card-text">
                             {% if integrantes_visitantes %}
                                 {% for item in integrantes_visitantes %}
-                                    <li>{{ item }}</li>
+                                    <div id="ficha-jugador" class="shadow p-4 mb-4 bg-white">
+                                        <div>
+                                            <img class="card-img-top rounded" src="
+                                                {% if item.foto %}
+                                                    {{ item.foto.url }}
+                                                {% else %}
+                                                        /static/accounts/anonimo.jpg
+                                                {% endif %}
+                                            " alt="Card image {{ item.username }}" 
+                                                 style="width: 50px; height: 50px; object-fit: cover;">
+                                        </div>
+                                        <div class="ms-3">
+                                            {{ item }}
+                                        </div>
+                                    </div>
                                 {% endfor %}
                             {% else %}
                                 <li>No hay jugadores asignados al equipo visitante.</li>
@@ -116,7 +154,21 @@
                 <ul class="card-text">
                     {% if sinequipo %}
                         {% for item in sinequipo %}
-                            <li>{{ item }}</li>
+                            <div id="ficha-jugador" class="shadow p-4 mb-4 bg-white">
+                                <div>
+                                    <img class="card-img-top rounded" src="
+                                        {% if item.foto %}
+                                            {{ item.foto.url }}
+                                        {% else %}
+                                                /static/accounts/anonimo.jpg
+                                        {% endif %}
+                                    " alt="Card image {{ item.username }}" 
+                                         style="width: 50px; height: 50px; object-fit: cover;">
+                                </div>
+                                <div class="ms-3">
+                                    {{ item }}
+                                </div>
+                            </div>
                         {% endfor %}
                     {% else %}
                         <li>No hay jugadores sin equipo asignado.</li>

@@ -5,8 +5,8 @@
   <ul>
     {% for comunidad in comunidades %}
       <li>
-      {{ comunidad }}
-      </li>
+          <a href="{% url 'modric:detalle_comunidad' comunidad.pk %}">{{ comunidad }}</a>
+          </li>
     {% endfor %}
   </ul>
 {% endblock %}

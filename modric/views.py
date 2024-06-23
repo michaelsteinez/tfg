@@ -46,7 +46,7 @@ def crear_partido(request):
             return redirect('modric:ver_partidos')
     else:
         form = PartidoForm()
-    return render(request, 'modric/crear_partido.html', {'form': form})
+    return render(request, 'modric/partido_crear.html', {'form': form})
 
 
 @login_required
@@ -82,7 +82,7 @@ def editar_partido(request, pk):
             }
             print(initial_data)
             form = PartidoForm(instance=partido, initial=initial_data)
-        return render(request, 'modric/editar_partido.html', {'form': form, 'partido': partido})
+        return render(request, 'modric/partido_editar.html', {'form': form, 'partido': partido})
     else:
         return redirect('modric:detalle_partido', pk)
 
@@ -125,7 +125,7 @@ def detalle_partido(request, pk):
         apuntable = False
 
 
-    return render(request, 'modric/detalle_partido.html', {
+    return render(request, 'modric/partido_detalle.html', {
         'partido': partido,
         'administradores': administradores,
         'integrantes_local': integrantes_local,
@@ -170,7 +170,7 @@ def listar_partidos(request):
         if comprobar_inscripcion(request.user, partido):
             lista_no_inscritos.append(partido.id)
 
-    return render(request, 'modric/listar_partidos.html', {
+    return render(request, 'modric/partidos_listar.html', {
         "partidos_anteriores": partidos_anteriores,
         "partidos_hoy": partidos_hoy,
         "partidos_futuros": partidos_futuros,
@@ -196,7 +196,7 @@ def buscar_partidos(request):
 
 
 
-    return render(request, 'modric/buscar_partidos.html', {
+    return render(request, 'modric/partidos_buscar.html', {
         "miscomunidades": miscomunidades,
         "otros": otros,
         "usuario": usuario
@@ -328,7 +328,7 @@ def notificaciones(request):
 def detalle_comunidad(request, comunidad_id):
     comunidad = get_object_or_404(Comunidad, id=comunidad_id)
     invitaciones = Invitacion.objects.filter(comunidad=comunidad)
-    return render(request, 'modric/detalle_comunidad.html', {'comunidad': comunidad, 'invitaciones': invitaciones})
+    return render(request, 'modric/comunidad_detalle.html', {'comunidad': comunidad, 'invitaciones': invitaciones})
 
 
 class ComunidadesUsuarioView(LoginRequiredMixin, ListView):
