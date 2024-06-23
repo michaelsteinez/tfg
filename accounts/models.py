@@ -1,5 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from PIL import Image
+
+
+def resize_image(image_path, max_width=800, max_height=600):
+    img = Image.open(image_path)
+    img.thumbnail((max_width, max_height), Image.Resampling.LANCZOS)
+    img.save(image_path)
 
 
 class CustomUser(AbstractUser):
@@ -19,3 +26,8 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.foto:
+            resize_image(self.foto.path)
