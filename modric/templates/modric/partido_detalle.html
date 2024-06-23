@@ -80,7 +80,7 @@
                         <ul class="card-text">
                             {% if integrantes_local %}
                                 {% for item in integrantes_local %}
-                                    <div id="ficha-jugador" class="shadow p-4 mb-4 bg-white">
+                                    <div id="ficha-jugador" class="shadow-sm p-2 mb-2 bg-white">
                                         <div>
                                             <img class="card-img-top rounded" src="
                                                 {% if item.foto %}
@@ -88,7 +88,7 @@
                                                 {% else %}
                                                         /static/accounts/anonimo.jpg
                                                 {% endif %}
-                                            " alt="Card image {{ item.username }}" 
+                                            " alt="Card image {{ item.username }}"
                                                  style="width: 50px; height: 50px; object-fit: cover;">
                                         </div>
                                         <div class="ms-3">
@@ -117,7 +117,7 @@
                         <ul class="card-text">
                             {% if integrantes_visitantes %}
                                 {% for item in integrantes_visitantes %}
-                                    <div id="ficha-jugador" class="shadow p-4 mb-4 bg-white">
+                                    <div id="ficha-jugador" class="shadow-sm p-2 mb-2 bg-white">
                                         <div>
                                             <img class="card-img-top rounded" src="
                                                 {% if item.foto %}
@@ -125,7 +125,7 @@
                                                 {% else %}
                                                         /static/accounts/anonimo.jpg
                                                 {% endif %}
-                                            " alt="Card image {{ item.username }}" 
+                                            " alt="Card image {{ item.username }}"
                                                  style="width: 50px; height: 50px; object-fit: cover;">
                                         </div>
                                         <div class="ms-3">
@@ -154,7 +154,7 @@
                 <ul class="card-text">
                     {% if sinequipo %}
                         {% for item in sinequipo %}
-                            <div id="ficha-jugador" class="shadow p-4 mb-4 bg-white">
+                            <div id="ficha-jugador" class="shadow-sm p-2 mb-2 bg-white">
                                 <div>
                                     <img class="card-img-top rounded" src="
                                         {% if item.foto %}
@@ -162,7 +162,7 @@
                                         {% else %}
                                                 /static/accounts/anonimo.jpg
                                         {% endif %}
-                                    " alt="Card image {{ item.username }}" 
+                                    " alt="Card image {{ item.username }}"
                                          style="width: 50px; height: 50px; object-fit: cover;">
                                 </div>
                                 <div class="ms-3">
