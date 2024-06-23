@@ -15,6 +15,7 @@ class CustomUser(AbstractUser):
 
     email = models.EmailField(unique=True, verbose_name="Correo electrónico")
     username = models.CharField(max_length=150, unique=True, verbose_name='Nombre de usuario')
+    foto = models.ImageField(upload_to='fotos/', null=True, blank=True, verbose_name="Foto de perfil")
 
     def __str__(self):
         return self.username

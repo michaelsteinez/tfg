@@ -3,15 +3,11 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
 from .models import CustomUser
 
+
 class CustomUserCreationForm(UserCreationForm):
-
-    # class Meta:
-    #     model = CustomUser
-    #     fields = ("username", "email")
-
     class Meta(UserCreationForm.Meta):
         model = CustomUser
-        fields = ('username', 'email', 'altura', 'fecha_nac', 'sexo')
+        fields = ('username', 'email', 'altura', 'fecha_nac', 'sexo', 'foto')
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
@@ -41,17 +37,21 @@ class CustomUserChangeForm(UserChangeForm):
         choices=CustomUser.sexo_choices,
         required=False,
     )
+    foto = forms.ImageField(
+        required=False,
+        label='Foto de perfil'
+    )
 
     class Meta:
         model = CustomUser
-        fields = ('username', 'email', 'altura', 'fecha_nac', 'sexo')
+        fields = ('username', 'email', 'altura', 'fecha_nac', 'sexo', 'foto')
 
     def __init__(self, *args, **kwargs):
         super(CustomUserChangeForm, self).__init__(*args, **kwargs)
 
         for field_name, field in self.fields.items():
             if field.widget.attrs.get('class'):
-                field.widget.attrs['class'] += ' form-control  form-control-lg"'
+                field.widget.attrs['class'] += ' form-control form-control-lg"'
             else:
                 field.widget.attrs['class'] = 'form-control'
 

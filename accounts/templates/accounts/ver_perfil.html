@@ -5,7 +5,11 @@
     <div class="row">
     <div class="col-sm-4">
     <div class="card  text-center" style="width:200px">
-      <img class="card-img-top" src="/static/accounts/anonimo.jpg" alt="Card image">
+      <img class="card-img-top" src="{% if usuario.foto %}
+                                        {{ usuario.foto.url }}
+                                    {% else %}
+                                            /static/accounts/anonimo.jpg
+                                    {% endif %}" alt="Card image {{ usuario.username }}">
       <div class="card-body">
           <h4 class="card-title">{{ usuario.username }}</h4>
           <p class="card-text">{{ usuario.email }}</p>

@@ -83,10 +83,25 @@ class EditarPerfil(LoginRequiredMixin, UpdateView):
     def get_object(self):
         return self.request.user
 
-    # Esto es para que el campo fecha de nacimiento del formulario se inicialice correctamente
+    # Esto es para que el campo fecha de nacimiento del formulario se inicialice correctamente (antes fallaba por el formato)
     def get_initial(self):
         initial = super().get_initial()
         if self.request.user.fecha_nac:
             initial['fecha_nac'] = self.request.user.fecha_nac.strftime('%Y-%m-%d')
         # print("Initial fecha_nac:", initial['fecha_nac'])  # Para ver el formato que debe ser YYYY-MM-DD
         return initial
+
+    # Sobrescribir el método post para manejar archivos
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    # Sobrescribir form_valid para guardar el formulario correctamente
+    def form_valid(self, form):
+        form.instance = self.object
+        form.save()
+        return super().form_valid(form)

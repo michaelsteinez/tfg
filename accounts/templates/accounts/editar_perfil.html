@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <h2>Editar Perfil</h2>
-<form method="post">
+<form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.non_field_errors }}
     <div class="input-group col-md">
@@ -29,6 +29,11 @@
             {{ form.sexo.label_tag }}
             {{ form.sexo }}
             {{ form.sexo.errors }}
+        </div>
+        <div class="col-md-4">
+            {{ form.foto.label_tag }}
+            {{ form.foto }}
+            {{ form.foto.errors }}
         </div>
     </div>
     <br>
