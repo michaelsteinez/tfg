@@ -329,7 +329,10 @@ def notificaciones(request):
 def detalle_comunidad(request, pk):
     comunidad = get_object_or_404(Comunidad, pk=pk)
     invitaciones = Invitacion.objects.filter(comunidad=comunidad)
-    return render(request, 'modric/comunidad_detalle.html', {'comunidad': comunidad, 'invitaciones': invitaciones})
+    usuario = request.user
+    return render(request, 'modric/comunidad_detalle.html', {'comunidad': comunidad,
+                                                             'invitaciones': invitaciones,
+                                                             'usuario': usuario})
 
 
 class ComunidadesUsuarioView(LoginRequiredMixin, ListView):

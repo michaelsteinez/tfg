@@ -24,5 +24,7 @@
       </li>
     {% endfor %}
   </ul>
-  <a href="{% url 'modric:solicitar_membresia' comunidad.id %}">Solicitar membresía</a>
+    {% if usuario not in comunidad.miembros.all %}
+        <a href="{% url 'modric:solicitar_membresia' comunidad.id %}">Solicitar membresía</a>
+    {% endif %}
 {% endblock %}
