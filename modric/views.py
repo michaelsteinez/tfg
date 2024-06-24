@@ -1,4 +1,6 @@
 from datetime import date, datetime, timedelta
+
+from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 from django.utils.timezone import make_aware
 from django.core.exceptions import ValidationError
@@ -8,8 +10,9 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 import requests
 
-from django.views.generic import ListView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import ListView, CreateView, UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.core.exceptions import PermissionDenied
 
 from modric.models import Partido, Recinto, Comunidad, Invitacion, Notificacion
 from .forms import PartidoForm, InvitacionForm
@@ -194,8 +197,6 @@ def buscar_partidos(request):
     otros = Partido.objects.filter(fecha__gte=now).filter(visibilidad='A').filter(
         ~Q(comunidad__in=comunidades)).filter(~Q(integrantes=usuario)).distinct().order_by('fecha')
 
-
-
     return render(request, 'modric/partidos_buscar.html', {
         "miscomunidades": miscomunidades,
         "otros": otros,
@@ -325,8 +326,8 @@ def notificaciones(request):
 
 
 @login_required
-def detalle_comunidad(request, comunidad_id):
-    comunidad = get_object_or_404(Comunidad, id=comunidad_id)
+def detalle_comunidad(request, pk):
+    comunidad = get_object_or_404(Comunidad, pk=pk)
     invitaciones = Invitacion.objects.filter(comunidad=comunidad)
     return render(request, 'modric/comunidad_detalle.html', {'comunidad': comunidad, 'invitaciones': invitaciones})
 
@@ -337,6 +338,55 @@ class ComunidadesUsuarioView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Comunidad.objects.filter(miembros=self.request.user)
+
+
+class ComunidadCrearView(LoginRequiredMixin, CreateView):
+    model = Comunidad
+    template_name = 'modric/comunidad_crear.html'
+
+    fields = ['nombre', 'escudo', 'descripcion']
+    success_url = reverse_lazy('accounts:perfil')
+
+    def form_valid(self, form):
+        form.instance.creador = self.request.user
+        response = super().form_valid(form)
+
+        self.object.administradores.add(self.request.user)
+        self.object.miembros.add(self.request.user)
+        return response
+
+
+class ComunidadEditarView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Comunidad
+    template_name = 'modric/comunidad_editar.html'
+
+    fields = ['nombre', 'escudo', 'descripcion', 'administradores', 'miembros']
+
+    def get_success_url(self):
+        return reverse('modric:detalle_comunidad', kwargs={'pk': self.object.pk})
+
+    def test_func(self):
+        comunidad = self.get_object()
+        # Permitir acceso solo al creador o a los administradores
+        if self.request.user == comunidad.creador or self.request.user in comunidad.administradores.all():
+            return True
+        raise PermissionDenied
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        comunidad = self.object
+
+        if comunidad.creador not in comunidad.administradores.all():
+            comunidad.administradores.add(comunidad.creador)
+        if comunidad.creador not in comunidad.miembros.all():
+            comunidad.miembros.add(comunidad.creador)
+
+        for admin in comunidad.administradores.all():
+            if admin not in comunidad.miembros.all():
+                comunidad.miembros.add(admin)
+
+        return response
+
 
 # # Recibe objetos, no indices. Devuelve True si el jugador está entre los integrantes del partido.
 # def comprobar_jugador_partido(usuario, partido):

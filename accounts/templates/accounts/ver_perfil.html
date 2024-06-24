@@ -57,6 +57,9 @@
         {% for comunidad in comunidades %}
           <li>
           <a href="{% url 'modric:detalle_comunidad' comunidad.pk %}">{{ comunidad }}</a>
+          {% if usuario in comunidad.administradores.all %}
+              <a href="{% url 'modric:comunidad_editar' comunidad.pk %}"> (Editar)</a>
+          {% endif %}
           </li>
         {% endfor %}
         </ul>

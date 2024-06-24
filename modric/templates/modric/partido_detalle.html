@@ -19,30 +19,31 @@
                 <a href="{% url 'modric:editar_partido' partido.pk %}" class="btn btn-primary">Editar</a>
             {% endif %}
         </div>
-        
-        <div class="mb-3">
-            <strong>Deporte:</strong> {{ partido.deporte }}
-        </div>
-        <div class="mb-3">
-            <strong>Fecha:</strong> {{ partido.fecha|date:"l"|capfirst }}, {{ partido.fecha }}
-        </div>
-        <div class="mb-3">
-            <strong>Duración:</strong> {{ partido.duracion_personalizada }} minutos
-        </div>
-        <div class="mb-3">
-            <strong>Recinto:</strong> <a href="{% url 'modric:recinto' partido.recinto.pk %}">{{ partido.recinto }}</a>
-        </div>
-        <div class="mb-3">
+        <div class="row">
+            <div class="col-sm-2">
+                <strong>Deporte:</strong> {{ partido.deporte }}
+            </div>
+            <div class="col">
+                <strong>Fecha:</strong> {{ partido.fecha|date:"l"|capfirst }}, {{ partido.fecha }}
+            </div>
+            <div class="col-sm-2">
+                <strong>Duración:</strong> {{ partido.duracion_personalizada }} minutos
+            </div>
+            <div class="col-sm-2">
+                <strong>Recinto:</strong> <a href="{% url 'modric:recinto' partido.recinto.pk %}">{{ partido.recinto }}</a>
+            </div>
             {% if partido.nombre_pista %}
-                <strong>Número de pista:</strong> {{ partido.nombre_pista }}
+                <div class="col-sm-2">
+                        <strong>Número de pista:</strong> {{ partido.nombre_pista }}
+                </div>
             {% endif %}
-        </div>
-        <div class="mb-3">
-            {% if partido.cubierto %}
-                <span class="badge bg-success">Pista cubierta</span>
-            {% else %}
-                <span class="badge bg-warning">Pista al aire libre</span>
-            {% endif %}
+            <div class="col-sm-2">
+                {% if partido.cubierto %}
+                    <span class="badge bg-success">Pista cubierta</span>
+                {% else %}
+                    <span class="badge bg-warning">Pista al aire libre</span>
+                {% endif %}
+            </div>
         </div>
         <hr>
         

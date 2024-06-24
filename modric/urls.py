@@ -13,7 +13,7 @@ urlpatterns = [
     path('partidos/', listar_partidos, name='ver_partidos'),
     path('partido/buscar/', buscar_partidos, name='buscar_partidos'),
     path('partido/crear/', crear_partido, name='crear_partido'),
-    path('partido/ver_detalle/<int:pk>', detalle_partido, name='detalle_partido'),
+    path('partido/ver_detalle/<int:pk>/', detalle_partido, name='detalle_partido'),
     path('partido/editar/<int:pk>/', editar_partido, name='editar_partido'),
 
     path('partido/jugador_partido/', jugador_partido, name='jugador_partido'),
@@ -25,8 +25,11 @@ urlpatterns = [
     path('solicitar_membresia/<int:comunidad_id>/', solicitar_membresia, name='solicitar_membresia'),
     path('invitaciones_enviadas/', invitaciones_enviadas, name='invitaciones_enviadas'),
     path('notificaciones/', notificaciones, name='notificaciones'),
-    path('comunidad/<int:comunidad_id>/', detalle_comunidad, name='detalle_comunidad'),
+
+    path('comunidad/<int:pk>/', detalle_comunidad, name='detalle_comunidad'),
     path('comunidades/', views.ComunidadesUsuarioView.as_view(), name='comunidades'),
+    path('comunidad/crear/', views.ComunidadCrearView.as_view(), name='comunidad_crear'),
+    path('comunidad/editar/<int:pk>/', views.ComunidadEditarView.as_view(), name='comunidad_editar'),
 
     path('starwars/', importar_usuarios_API, name='importar_starwars'),
 

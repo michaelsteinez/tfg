@@ -48,3 +48,9 @@ class InvitacionForm(forms.ModelForm):
         self.fields['comunidad'].queryset = Comunidad.objects.filter(administradores=user).order_by('nombre')
         # Si sobrase tiempo, sería conveniente excluir los miembros de las comunidades seleccionadas en el primer campo
         self.fields['usuario'].queryset = CustomUser.objects.exclude(id=user.id).order_by('username')
+
+
+class ComunidadForm(forms.ModelForm):
+    class Meta:
+        model = Comunidad
+        fields = ['nombre', 'escudo', 'descripcion', 'administradores', 'miembros']
