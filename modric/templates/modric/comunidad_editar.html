@@ -4,7 +4,39 @@
   <h2>Editar Comunidad</h2>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Guardar</button>
+    <div class="row">
+        <div class="col-md">
+        {{ form.nombre.errors }}
+        {{ form.nombre.label}}<br>
+        {{ form.nombre }}
+        </div>
+        <div class="col-md">
+          {{ form.escudo.errors }}
+          {{ form.escudo.label }} <img src="{% if comunidad.escudo %}
+                                                {{ comunidad.escudo.url }}
+                                            {% endif %}" style="max-height: 50px"><br>
+          {{ form.escudo }}
+        </div>
+    </div>
+      <hr>
+    <div class="row">
+        <div class="col-md">  
+          {{ form.descripcion.errors }}
+          {{ form.descripcion.label }}<br>
+          {{ form.descripcion }}
+        </div>
+        <div class="col-md">
+          {{ form.administradores.errors }}
+          {{ form.administradores.label }}<br>
+          {{ form.administradores }}
+        </div>
+        <div class="col-md">
+          {{ form.miembros.errors }}
+          {{ form.miembros.label }}<br>
+          {{ form.miembros }}
+        </div>
+    </div>
+      <hr>
+    <button type="submit" class="btn btn-primary">Guardar</button>
   </form>
 {% endblock %}

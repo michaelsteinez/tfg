@@ -5,8 +5,27 @@
 <h2>Crear Comunidad</h2>
 <form method="post" enctype="multipart/form-data">
 {% csrf_token %}
-{{ form.as_p }}
-<button type="submit">Crear</button>
+<div class="row">
+        <div class="col-md">
+        {{ form.nombre.errors }}
+        {{ form.nombre.label}}<br>
+        {{ form.nombre }}
+        </div>
+        <div class="col-md">
+          {{ form.escudo.errors }}
+          {{ form.escudo.label }}
+          {{ form.escudo }}
+        </div>
+    </div>
+      <hr>
+    <div class="row">
+        <div class="col-md">  
+          {{ form.descripcion.errors }}
+          {{ form.descripcion.label }}<br>
+          {{ form.descripcion }}
+        </div>
+    </div>
+<button class="btn btn-primary" type="submit">Crear</button>
 </form>
 
 {% endblock %}

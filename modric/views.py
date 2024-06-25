@@ -15,7 +15,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
 
 from modric.models import Partido, Recinto, Comunidad, Invitacion, Notificacion
-from .forms import PartidoForm, InvitacionForm
+from .forms import PartidoForm, InvitacionForm, ComunidadForm
 from accounts.models import CustomUser
 
 # Importamos Q para combinar las condiciones de los filtros en las querysets
@@ -361,9 +361,8 @@ class ComunidadCrearView(LoginRequiredMixin, CreateView):
 
 class ComunidadEditarView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Comunidad
+    form_class = ComunidadForm
     template_name = 'modric/comunidad_editar.html'
-
-    fields = ['nombre', 'escudo', 'descripcion', 'administradores', 'miembros']
 
     def get_success_url(self):
         return reverse('modric:detalle_comunidad', kwargs={'pk': self.object.pk})

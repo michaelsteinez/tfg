@@ -54,3 +54,13 @@ class ComunidadForm(forms.ModelForm):
     class Meta:
         model = Comunidad
         fields = ['nombre', 'escudo', 'descripcion', 'administradores', 'miembros']
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
+            'escudo': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'descripcion': forms.Textarea(attrs={'class': 'form-control', 'rows': 8}),
+            'administradores': forms.SelectMultiple(attrs={'class': 'form-control w-100', 'style': 'height: 200px;'}),
+            'miembros': forms.SelectMultiple(attrs={'class': 'form-control w-100', 'style': 'height: 200px;'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(ComunidadForm, self).__init__(*args, **kwargs)
