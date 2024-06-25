@@ -59,7 +59,7 @@
           <img src="{% if comunidad.escudo %}
                                         {{ comunidad.escudo.url }}
                     {% else %}
-                                            /static/accounts/anonimo.jpg
+                                            /static/modric/escudo.jpg
                     {% endif %}" style="max-height: 20px">
           <a href="{% url 'modric:detalle_comunidad' comunidad.pk %}">{{ comunidad }}</a>
           {% if usuario in comunidad.administradores.all %}
