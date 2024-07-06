@@ -1,6 +1,7 @@
 from collections import defaultdict
 
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -17,11 +18,19 @@ class SignUpView(CreateView):
 
 
 def calcularEstadisticas(usuario):
+    # Solo se calculan para partidos anteriores a la fecha de hoy
+    hoy = timezone.now()
+
     # https://stackoverflow.com/questions/31237042/whats-the-difference-between-select-related-and-prefetch-related-in-django-orm
-    partidos_local = Partido.objects.filter(integrantes_local=usuario).select_related('deporte').prefetch_related(
-        'integrantes_local', 'integrantes_visitante')
-    partidos_visitante = Partido.objects.filter(integrantes_visitante=usuario).select_related(
-        'deporte').prefetch_related('integrantes_local', 'integrantes_visitante')
+    partidos_local = Partido.objects.filter(
+        integrantes_local=usuario,
+        fecha__lt=hoy
+    ).select_related('deporte').prefetch_related('integrantes_local', 'integrantes_visitante')
+
+    partidos_visitante = Partido.objects.filter(
+        integrantes_visitante=usuario,
+        fecha__lt=hoy
+    ).select_related('deporte').prefetch_related('integrantes_local', 'integrantes_visitante')
 
     # Inicializamos
     estadisticas_por_deporte = defaultdict(lambda: {'ganados': 0, 'empatados': 0, 'perdidos': 0, 'total': 0})
