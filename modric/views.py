@@ -30,7 +30,7 @@ def index(request):
 @login_required
 def crear_partido(request):
     if request.method == 'POST':
-        form = PartidoForm(request.POST)
+        form = PartidoForm(request.POST, )
         if form.is_valid():
             partido = form.save(commit=False)
             username = request.user.username
@@ -48,7 +48,7 @@ def crear_partido(request):
             form.save_m2m()
             return redirect('modric:ver_partidos')
     else:
-        form = PartidoForm()
+        form = PartidoForm(user=request.user)
     return render(request, 'modric/partido_crear.html', {'form': form})
 
 
@@ -57,9 +57,14 @@ def editar_partido(request, pk):
     usuario = request.user
     partido = get_object_or_404(Partido, pk=pk)
 
+    hoy = datetime.now()
+
+    # Determinar si el partido ya ha finalizado
+    finalizado = partido.fecha < make_aware(hoy)
+
     if usuario in partido.administradores.all() or usuario == partido.creador:
         if request.method == 'POST':
-            form = PartidoForm(request.POST, instance=partido)
+            form = PartidoForm(request.POST, instance=partido, user=usuario)
             if form.is_valid():
                 try:
                     partido = form.save(commit=False)
@@ -84,8 +89,8 @@ def editar_partido(request, pk):
                 'hora': partido.fecha.time(),
             }
             print(initial_data)
-            form = PartidoForm(instance=partido, initial=initial_data)
-        return render(request, 'modric/partido_editar.html', {'form': form, 'partido': partido})
+            form = PartidoForm(instance=partido, initial=initial_data,  user=usuario)
+        return render(request, 'modric/partido_editar.html', {'form': form, 'partido': partido, 'finalizado': finalizado})
     else:
         return redirect('modric:detalle_partido', pk)
 

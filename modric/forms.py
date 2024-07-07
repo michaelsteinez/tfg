@@ -19,6 +19,8 @@ class PartidoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         # Obtener la instancia del partido actual
         partido = kwargs.get('instance')
+        # Obtener el usuario actual
+        user = kwargs.pop('user', None)
         super(PartidoForm, self).__init__(*args, **kwargs)
 
         for field_name, field in self.fields.items():
@@ -31,11 +33,21 @@ class PartidoForm(forms.ModelForm):
                     field.widget.attrs['class'] += ' form-control'
                 else:
                     field.widget.attrs['class'] = 'form-control'
+        if user:
+            comunidades = Comunidad.objects.filter(miembros=user).order_by('nombre')
+            self.fields['comunidad'].queryset = comunidades
+
+            miembros = (CustomUser.objects.filter(miembros_comunidad__in=comunidades)
+                                                   .distinct().order_by('username'))
+            self.fields['administradores'].queryset = miembros
+            self.fields['integrantes'].queryset = miembros
+            self.fields['integrantes_local'].queryset = miembros
+            self.fields['integrantes_visitante'].queryset = miembros
 
         if partido:
             # Filtrar los usuarios que forman parte de 'integrantes'
-            self.fields['integrantes_local'].queryset = partido.integrantes.all()
-            self.fields['integrantes_visitante'].queryset = partido.integrantes.all()
+            self.fields['integrantes_local'].queryset = partido.integrantes.all().order_by('username')
+            self.fields['integrantes_visitante'].queryset = partido.integrantes.all().order_by('username')
 
 
 class InvitacionForm(forms.ModelForm):
