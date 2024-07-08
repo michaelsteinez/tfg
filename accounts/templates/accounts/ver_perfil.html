@@ -51,23 +51,44 @@
     </div>
     </div>
     <hr>
-    <div>
-        <h2>Mis comunidades</h2>
-        <ul>
-        {% for comunidad in comunidades %}
-          <p>
-          <img src="{% if comunidad.escudo %}
-                                        {{ comunidad.escudo.url }}
-                    {% else %}
-                                            /static/modric/escudo.jpg
-                    {% endif %}" style="max-height: 20px">
-          <a href="{% url 'modric:detalle_comunidad' comunidad.pk %}">{{ comunidad }}</a>
-          {% if usuario in comunidad.administradores.all %}
-              <a href="{% url 'modric:comunidad_editar' comunidad.pk %}"> (Editar)</a>
-          {% endif %}
-          </p>
-        {% endfor %}
-        </ul>
+    <div class="row">
+        <div class="col-sm-4">
+            <h2>Mis comunidades</h2>
+            <ul>
+            {% for comunidad in comunidades %}
+              <p>
+              <img src="{% if comunidad.escudo %}
+                                            {{ comunidad.escudo.url }}
+                        {% else %}
+                                                /static/modric/escudo.jpg
+                        {% endif %}" style="max-height: 20px">
+              <a href="{% url 'modric:detalle_comunidad' comunidad.pk %}">{{ comunidad }}</a>
+              {% if usuario in comunidad.administradores.all %}
+                  <a href="{% url 'modric:comunidad_editar' comunidad.pk %}"> (Editar)</a>
+              {% endif %}
+              </p>
+            {% endfor %}
+            <p><a href="{% url 'modric:comunidades' %}">Ir a mis comunidades.</a></p>
+            </ul>
+        </div>
+        <div class="col">
+            <H2>Notificaciones</H2>
+            <ul>
+                {% for notificacion in notificaciones %}
+                  <li {% if not notificacion.leido %} style="font-weight: bold;" {% endif %}>
+                    {{ notificacion.mensaje }} - {{ notificacion.fecha_notificacion }}
+                    {% if not notificacion.leido %}
+                      <form method="post" action="{% url 'modric:notificaciones' %}" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="notificacion_id" value="{{ notificacion.id }}">
+                        <button type="submit">Marcar como leída</button>
+                      </form>
+                    {% endif %}
+                  </li>
+                {% endfor %}
+            </ul>
+        </div>
+
     </div>
 
 {% endblock %}

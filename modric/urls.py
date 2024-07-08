@@ -20,15 +20,18 @@ urlpatterns = [
 
     path('recinto/<int:pk>/', detalle_recinto, name='recinto'),
 
-    path('enviar_invitacion/', enviar_invitacion, name='enviar_invitacion'),
+    path('comunidad/invitaciones/enviar/', enviar_invitacion, name='enviar_invitacion'),
+    path('comunidad/invitaciones/enviadas/', invitaciones_enviadas, name='invitaciones_enviadas'),
+
     path('manejar_solicitudes/', manejar_solicitudes, name='manejar_solicitudes'),
     path('solicitar_membresia/<int:comunidad_id>/', solicitar_membresia, name='solicitar_membresia'),
-    path('invitaciones_enviadas/', invitaciones_enviadas, name='invitaciones_enviadas'),
+
     path('notificaciones/', notificaciones, name='notificaciones'),
 
     path('comunidad/<int:pk>/', detalle_comunidad, name='detalle_comunidad'),
     path('comunidades/', views.ComunidadesUsuarioView.as_view(), name='comunidades'),
     path('comunidad/crear/', views.ComunidadCrearView.as_view(), name='comunidad_crear'),
+    path('comunidad/buscar/', views.ComunidadesBuscarNuevas.as_view(), name='comunidad_buscar'),
     path('comunidad/editar/<int:pk>/', views.ComunidadEditarView.as_view(), name='comunidad_editar'),
 
     path('starwars/', importar_usuarios_API, name='importar_starwars'),

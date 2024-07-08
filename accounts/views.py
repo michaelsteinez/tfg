@@ -8,7 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 from .models import CustomUser
-from modric.models import Comunidad, Partido
+from modric.models import Comunidad, Partido, Notificacion
 
 
 class SignUpView(CreateView):
@@ -79,6 +79,7 @@ class VerPerfil(LoginRequiredMixin, TemplateView):
         context["usuario"] = self.request.user
         context["comunidades"] = Comunidad.objects.filter(miembros=self.request.user)
         context["estadisticas"] = calcularEstadisticas(self.request.user)
+        context["notificaciones"] = Notificacion.objects.filter(usuario=self.request.user).order_by('-fecha')
 
         return context
 

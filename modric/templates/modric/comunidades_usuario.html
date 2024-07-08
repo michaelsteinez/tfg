@@ -2,11 +2,27 @@
 
 {% block content %}
   <h2>Mis comunidades</h2>
-  <ul>
-    {% for comunidad in comunidades %}
-      <li>
-          <a href="{% url 'modric:detalle_comunidad' comunidad.pk %}">{{ comunidad }}</a>
-          </li>
-    {% endfor %}
-  </ul>
+    {% if comunidades %}
+        {% for comunidad in comunidades %}
+            <p><a href="{% url 'modric:detalle_comunidad' comunidad.pk %}">
+                <img src="{% if comunidad.escudo %}
+                                            {{ comunidad.escudo.url }}
+                        {% else %}
+                                                /static/modric/escudo.jpg
+                        {% endif %}" style="max-height: 20px">
+                {{ comunidad }}</a>
+            {% if usuario in comunidad.administradores.all %}
+                <a href="{% url 'modric:comunidad_editar' comunidad.pk %}"> (Editar)</a>
+            {% endif %}
+            </p>        
+        {% endfor %}
+        {% if invitaciones > 0 %}
+            <p><a>Tiene {{ invitaciones }} solicitudes como administrador pendientes de contestar</a></p>
+        {% else %}
+            <p>No tiene solicitudes como administrador pendientes de contestar.</p>
+        {% endif %}
+        <p>Busque alguna comunidad nueva <a href="{% url 'modric:comunidad_buscar' %}">aquí</a>.</p>
+    {% else %}
+        <p>Aún no pertenece a ninguna comunidad. Busque alguna <a href="{% url 'modric:comunidad_buscar' %}">aquí</a>.</p>
+    {% endif %}
 {% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Comunidades</h2>
+    {% if comunidades %}
+        <h4>Puedes solicitar acceso a estas comunidades:</h4>
+        {% for comunidad in comunidades %}
+            <p><a href="{% url 'modric:detalle_comunidad' pk=comunidad.pk %}">
+                <img src="{% if comunidad.escudo %}
+                                            {{ comunidad.escudo.url }}
+                        {% else %}
+                                                /static/modric/escudo.jpg
+                        {% endif %}" style="max-height: 20px">
+                {{ comunidad }} ({{ comunidad.miembros.count }})</a></p>
+        {% endfor %}
+    {% else %}
+        <p>¡Perteneces a todas las comunidades existentes!</p>
+    {% endif %}
+
+{% endblock %}

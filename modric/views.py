@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 import requests
 
-from django.views.generic import ListView, CreateView, UpdateView
+from django.views.generic import TemplateView, CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
 
@@ -30,7 +30,7 @@ def index(request):
 @login_required
 def crear_partido(request):
     if request.method == 'POST':
-        form = PartidoForm(request.POST, )
+        form = PartidoForm(request.POST, user=request.user, marcador=False)
         if form.is_valid():
             partido = form.save(commit=False)
             username = request.user.username
@@ -46,9 +46,14 @@ def crear_partido(request):
             partido.save()
             # Para guardar los campos ManyToMany
             form.save_m2m()
+            if request.user not in partido.administradores.all():
+                partido.administradores.add(request.user)
             return redirect('modric:ver_partidos')
+        else:
+            print("El formulario no es válido")
+            print(form.errors)
     else:
-        form = PartidoForm(user=request.user)
+        form = PartidoForm(user=request.user, marcador=False)
     return render(request, 'modric/partido_crear.html', {'form': form})
 
 
@@ -60,11 +65,11 @@ def editar_partido(request, pk):
     hoy = datetime.now()
 
     # Determinar si el partido ya ha finalizado
-    finalizado = partido.fecha < make_aware(hoy)
+    marcador = partido.fecha < make_aware(hoy)
 
     if usuario in partido.administradores.all() or usuario == partido.creador:
         if request.method == 'POST':
-            form = PartidoForm(request.POST, instance=partido, user=usuario)
+            form = PartidoForm(request.POST, instance=partido, user=usuario, marcador=marcador)
             if form.is_valid():
                 try:
                     partido = form.save(commit=False)
@@ -79,6 +84,8 @@ def editar_partido(request, pk):
                     partido.full_clean()  # Llama a clean() para las validaciones del modelo
                     partido.save()
                     form.save_m2m()  # Para guardar los campos ManyToMany
+                    if request.user not in partido.administradores.all():
+                        partido.administradores.add(request.user)
                     return redirect('modric:detalle_partido', pk=pk)
                 except ValidationError as e:
                     form.add_error(None, e)  # Agregar errores al formulario
@@ -89,8 +96,8 @@ def editar_partido(request, pk):
                 'hora': partido.fecha.time(),
             }
             print(initial_data)
-            form = PartidoForm(instance=partido, initial=initial_data,  user=usuario)
-        return render(request, 'modric/partido_editar.html', {'form': form, 'partido': partido, 'finalizado': finalizado})
+            form = PartidoForm(instance=partido, initial=initial_data,  user=usuario, marcador=marcador)
+        return render(request, 'modric/partido_editar.html', {'form': form, 'partido': partido,})
     else:
         return redirect('modric:detalle_partido', pk)
 
@@ -282,7 +289,7 @@ def solicitar_membresia(request, comunidad_id):
                 usuario=invitacion.comunidad.creador,
                 mensaje=f'{request.user.username} ha solicitado unirse a la comunidad {invitacion.comunidad.nombre}.'
             )
-        return redirect('modric:detalle_comunidad', comunidad_id=comunidad_id)
+        return redirect('modric:detalle_comunidad', pk=comunidad_id)
     return render(request, 'modric/solicitar_membresia.html', {'comunidad': comunidad})
 
 
@@ -333,19 +340,51 @@ def notificaciones(request):
 @login_required
 def detalle_comunidad(request, pk):
     comunidad = get_object_or_404(Comunidad, pk=pk)
-    invitaciones = Invitacion.objects.filter(comunidad=comunidad)
     usuario = request.user
+    invitaciones = Invitacion.objects.filter(comunidad=comunidad)
+    pedida = False
+    for invitacion in invitaciones:
+        if invitacion.usuario == usuario:
+            pedida = invitacion.fecha
     return render(request, 'modric/comunidad_detalle.html', {'comunidad': comunidad,
                                                              'invitaciones': invitaciones,
+                                                             'pedida': pedida,
                                                              'usuario': usuario})
 
+# def gestionar_comunidad(request, pk):
+#     comunidad = get_object_or_404(Comunidad, pk=pk)
+#     usuario = request.user
+#     if usuario in comunidad.administradores.all():
+#         invitaciones = Invitacion.objects.filter(comunidad=comunidad)
+#         return render(request, 'modric/comunidad_detalle.html', {'comunidad': comunidad,
+#                                                              'invitaciones': invitaciones,
+#                                                              'usuario': usuario})
 
-class ComunidadesUsuarioView(LoginRequiredMixin, ListView):
+class ComunidadesUsuarioView(LoginRequiredMixin, TemplateView):
     template_name = 'modric/comunidades_usuario.html'
-    context_object_name = 'comunidades'
+    # context_object_name = 'comunidades'
 
-    def get_queryset(self):
-        return Comunidad.objects.filter(miembros=self.request.user)
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+
+        context["usuario"] = self.request.user
+        context["comunidades"] = Comunidad.objects.filter(miembros=self.request.user)
+        context["invitaciones"] = Invitacion.objects.filter(comunidad__administradores=self.request.user, estado=Invitacion.PENDIENTE).count()
+
+        return context
+
+
+class ComunidadesBuscarNuevas(LoginRequiredMixin, TemplateView):
+    template_name = 'modric/comunidad_buscar.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+
+        context["usuario"] = self.request.user
+        context["comunidades"] = Comunidad.objects.exclude(miembros=self.request.user)
+
+        return context
+
 
 
 class ComunidadCrearView(LoginRequiredMixin, CreateView):

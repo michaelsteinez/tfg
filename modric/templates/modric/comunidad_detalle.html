@@ -29,6 +29,21 @@
                     {% endif %}" style="max-height: 100px"></p>
         </div>
         <p><strong>Descripción:</strong> {{ comunidad.descripcion }}</p>
+        {% if usuario in comunidad.administradores.all %}
+            <p><a href="{% url 'modric:comunidad_editar' comunidad.pk %}">Editar detalles de la comunidad</a></p>
+            <p><a href="{% url 'modric:manejar_solicitudes' %}">Gestionar comunidad (Admitir o rechazar solicitudes)</a></p>
+        {% endif %}
+        
+        {% if usuario not in comunidad.miembros.all %}
+            {% if not pedida %}
+                <p>¿Quieres formar parte de esta comunidad?</p>
+                <a href="{% url 'modric:solicitar_membresia' comunidad.id %}">Solicitar membresía</a>
+            {% else %}        
+                <p>Ya has solicitado formar parte con anterioridad el {{ pedida }}.</p>
+            {% endif %}
+        {% endif %}
+        
+            
     </div>
     <hr>
 <div class="row">
@@ -77,15 +92,15 @@
     </div>
     </div>
 </div>
-  <h3 class="mt-3">Solicitudes e Invitaciones</h3>
-  <ul>
-    {% for invitacion in invitaciones %}
-      <li>
-        {{ invitacion.usuario.username }} - {{ invitacion.get_estado_display }} - {{ invitacion.fecha_invitacion }}
-      </li>
-    {% endfor %}
-  </ul>
-    {% if usuario not in comunidad.miembros.all %}
-        <a href="{% url 'modric:solicitar_membresia' comunidad.id %}">Solicitar membresía</a>
-    {% endif %}
+{#    {% if invitaciones %}#}
+{#      <h3 class="mt-3">Invitaciones</h3>#}
+{#      <ul>#}
+{#        {% for invitacion in invitaciones %}#}
+{#          <li>#}
+{#            {{ invitacion.usuario.username }} - {{ invitacion.get_estado_display }} - {{ invitacion.fecha_invitacion }}#}
+{#          </li>#}
+{#        {% endfor %}#}
+{#      </ul>#}
+{#    {% endif %}#}
+    
 {% endblock %}

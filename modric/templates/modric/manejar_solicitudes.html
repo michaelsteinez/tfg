@@ -2,7 +2,8 @@
 
 {% block content %}
   <h2>Manejar solicitudes</h2>
-  <ul>
+  {% if invitaciones %}
+    <ul>
     {% for invitacion in invitaciones %}
       <li>
         {{ invitacion.usuario.username }} - {{ invitacion.comunidad.nombre }}
@@ -15,4 +16,7 @@
       </li>
     {% endfor %}
   </ul>
+    {% else %}
+      <p>No tiene solicitudes pendientes en ninguna de las comunidades de las que eres administrador.</p>
+    {% endif %}
 {% endblock %}
