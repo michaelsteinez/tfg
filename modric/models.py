@@ -39,6 +39,7 @@ class Invitacion(models.Model):
 
     class Meta:
         unique_together = ('comunidad', 'usuario')
+        verbose_name_plural = 'Invitaciones'
 
     def __str__(self):
         return f'{self.usuario.username} - {self.comunidad.nombre} - {self.get_estado_display()}'
@@ -49,6 +50,9 @@ class Notificacion(models.Model):
     mensaje = models.TextField()
     leido = models.BooleanField(default=False, verbose_name='leído')
     fecha = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = 'Notificaciones'
 
     def __str__(self):
         return f'Notificacion para {self.usuario.username} - {self.leido}'
