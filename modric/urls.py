@@ -2,7 +2,7 @@ from django.urls import path
 from modric.views import (index, crear_partido, buscar_partidos, listar_partidos, importar_usuarios_API,
                           detalle_partido, editar_partido, detalle_recinto, jugador_partido,
                           enviar_invitacion, manejar_solicitudes, solicitar_membresia, invitaciones_enviadas,
-                          notificaciones, detalle_comunidad)
+                          notificaciones, detalle_comunidad, solicitudes_personales)
 from modric import views
 
 app_name = 'modric'
@@ -19,11 +19,16 @@ urlpatterns = [
     path('partido/jugador_partido/', jugador_partido, name='jugador_partido'),
 
     path('recinto/<int:pk>/', detalle_recinto, name='recinto'),
+    # Antes de descomentar las 2 URLs siguientes, descomentar en modric/views sus vistas correspondientes
+    # e importar arriba
+    # path('recinto/crear/', recinto_crear, name='recinto_crear'),
+    # path('recinto/editar/<int:pk>/', recinto_editar, name='recinto_editar'),
 
     path('comunidad/invitaciones/enviar/', enviar_invitacion, name='enviar_invitacion'),
     path('comunidad/invitaciones/enviadas/', invitaciones_enviadas, name='invitaciones_enviadas'),
 
     path('manejar_solicitudes/', manejar_solicitudes, name='manejar_solicitudes'),
+    path('solicitudes/personales/', solicitudes_personales, name='solicitudes_personales'),
     path('solicitar_membresia/<int:comunidad_id>/', solicitar_membresia, name='solicitar_membresia'),
 
     path('notificaciones/', notificaciones, name='notificaciones'),

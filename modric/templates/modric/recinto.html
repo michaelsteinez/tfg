@@ -11,6 +11,7 @@
     {% for deporte in deportes %}
         <li>{{ deporte }}</li>
     {% endfor %}
+{#    <p><a href="{% url 'modric:recinto_editar' pk=recinto.pk %}">Editar</a></p>#}
     <p><a href="{% url 'modric:ver_partidos' %}">Volver a lista de partidos</a></p>
     <p><a href="{% url 'modric:index' %}">Inicio</a></p>
 {% endblock %}

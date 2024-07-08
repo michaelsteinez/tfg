@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Partido, Invitacion, Comunidad
+from .models import Partido, Invitacion, Comunidad, Recinto
 from accounts.models import CustomUser
 
 
@@ -90,3 +90,12 @@ class ComunidadForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ComunidadForm, self).__init__(*args, **kwargs)
+
+
+class RecintoForm(forms.ModelForm):
+    class Meta:
+        model = Recinto
+        fields = ['nombre', 'calle', 'municipio', 'provincia', 'pais', 'deportes']
+        widgets = {
+            'deportes': forms.CheckboxSelectMultiple,  # Usa checkboxes para seleccionar deportes
+        }

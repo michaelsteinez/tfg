@@ -17,9 +17,14 @@
             </p>        
         {% endfor %}
         {% if invitaciones > 0 %}
-            <p><a>Tiene {{ invitaciones }} solicitudes como administrador pendientes de contestar</a></p>
+            <p><a href="{% url 'modric:manejar_solicitudes' %}">Tiene {{ invitaciones }} solicitudes como administrador pendientes de contestar</a></p>
         {% else %}
             <p>No tiene solicitudes como administrador pendientes de contestar.</p>
+        {% endif %}
+        {% if personales > 0 %}
+            <p><a href="{% url 'modric:solicitudes_personales' %}">Tiene {{ personales }} solicitudes personales pendientes de contestar</a></p>
+        {% else %}
+            <p>No tiene solicitudes como usuario pendientes de contestar.</p>
         {% endif %}
         <p>Busque alguna comunidad nueva <a href="{% url 'modric:comunidad_buscar' %}">aquí</a>.</p>
     {% else %}

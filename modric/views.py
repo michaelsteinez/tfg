@@ -15,7 +15,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
 
 from modric.models import Partido, Recinto, Comunidad, Invitacion, Notificacion
-from .forms import PartidoForm, InvitacionForm, ComunidadForm
+from .forms import PartidoForm, InvitacionForm, ComunidadForm, RecintoForm
 from accounts.models import CustomUser
 
 # Importamos Q para combinar las condiciones de los filtros en las querysets
@@ -226,6 +226,31 @@ def detalle_recinto(request, pk):
         'deportes': deportes,
     })
 
+######## VISTAS PARA CREAR Y EDITAR RECINTOS (NO SE USAN, SE DEJAN PARA UN DESARROLLO MÁS ALLÁ DE ESTE TFG ####
+# @login_required
+# def recinto_crear(request):
+#     if request.method == 'POST':
+#         form = RecintoForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('modric:ver_partidos')
+#     else:
+#         form = RecintoForm()
+#     return render(request, 'modric/recinto_form.html', {'form': form})
+#
+# @login_required
+# def recinto_editar(request, pk):
+#     recinto = get_object_or_404(Recinto, pk=pk)
+#     if request.method == 'POST':
+#         form = RecintoForm(request.POST, instance=recinto)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('modric:recinto', pk=pk)
+#     else:
+#         form = RecintoForm(instance=recinto)
+#     return render(request, 'modric/recinto_form.html', {'form': form})
+
+########################### FIN VISTAS RECINTOS ##############################################################
 
 def partido_in_out(usuario, partido, sentido):
     if sentido:
@@ -266,7 +291,8 @@ def jugador_partido(request):
 @login_required
 def enviar_invitacion(request):
     if request.method == 'POST':
-        form = InvitacionForm(request.POST)
+        #form = InvitacionForm(request.POST)
+        form = InvitacionForm(user=request.user, data=request.POST)
         if form.is_valid():
             invitacion = form.save()
             Notificacion.objects.create(
@@ -316,6 +342,31 @@ def manejar_solicitudes(request):
         invitacion.save()
         return redirect('modric:manejar_solicitudes')
     return render(request, 'modric/manejar_solicitudes.html', {'invitaciones': invitaciones})
+
+
+def solicitudes_personales(request):
+    invitaciones = Invitacion.objects.filter(usuario=request.user, estado=Invitacion.PENDIENTE)
+    if request.method == 'POST':
+        invitacion_id = request.POST.get('invitacion_id')
+        action = request.POST.get('action')
+        invitacion = get_object_or_404(Invitacion, id=invitacion_id)
+        if action == 'aceptar':
+            invitacion.estado = Invitacion.ACEPTADA
+            invitacion.comunidad.miembros.add(invitacion.usuario)
+            Notificacion.objects.create(
+                usuario=invitacion.usuario,
+                mensaje=f'Has aceptado unirte a la comunidad {invitacion.comunidad.nombre} ha sido aceptada.'
+            )
+        elif action == 'rechazar':
+            invitacion.estado = Invitacion.RECHAZADA
+            Notificacion.objects.create(
+                usuario=invitacion.usuario,
+                mensaje=f'Has rechazado unirte a la comunidad {invitacion.comunidad.nombre} ha sido denegada.'
+            )
+        invitacion.save()
+        return redirect('modric:solicitudes_personales')
+    return render(request, 'modric/solicitudes_personales.html', {'invitaciones': invitaciones})
+
 
 
 @login_required
@@ -370,6 +421,7 @@ class ComunidadesUsuarioView(LoginRequiredMixin, TemplateView):
         context["usuario"] = self.request.user
         context["comunidades"] = Comunidad.objects.filter(miembros=self.request.user)
         context["invitaciones"] = Invitacion.objects.filter(comunidad__administradores=self.request.user, estado=Invitacion.PENDIENTE).count()
+        context["personales"] = Invitacion.objects.filter(usuario=self.request.user, estado=Invitacion.PENDIENTE).count()
 
         return context
 

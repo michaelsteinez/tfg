@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Manejar solicitudes personales</h2>
+  {% if invitaciones %}
+    <ul>
+    {% for invitacion in invitaciones %}
+      <li>
+        {{ invitacion.usuario.username }}, has sido invitado a unirte a {{ invitacion.comunidad.nombre }}
+        <form method="post" style="display:inline;">
+          {% csrf_token %}
+          <input type="hidden" name="invitacion_id" value="{{ invitacion.id }}">
+          <button type="submit" name="action" value="aceptar">Aceptar</button>
+          <button type="submit" name="action" value="rechazar">Rechazar</button>
+        </form>
+      </li>
+    {% endfor %}
+  </ul>
+    {% else %}
+      <p>No tiene solicitudes pendientes de ninguna comunidad nueva.</p>
+    {% endif %}
+{% endblock %}
