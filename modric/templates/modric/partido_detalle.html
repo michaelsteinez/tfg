@@ -65,6 +65,16 @@
                     <p><strong>Creado por:</strong></p>{{ partido.creador }}
                 {% endif %}
             </div>
+            <div>
+                <p><strong>Comunidad:</strong></p>
+                <p><a href="{% url 'modric:detalle_comunidad' pk=partido.comunidad.pk %}">
+                    <img src="{% if comunidad.escudo %}
+                                            {{ comunidad.escudo.url }}
+                        {% else %}
+                                                /static/modric/escudo.jpg
+                        {% endif %}" style="max-height: 20px"> 
+                    {{ partido.comunidad }}</a></p>
+            </div>
         </div>
         
         <div class="row mb-4">

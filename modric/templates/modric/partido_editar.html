@@ -99,8 +99,7 @@
             </div>
         </div>
         <hr>
-        {% if finalizado %}
-        <div class="row">
+        <div class="row mb-3">
             <div class="col-md">
                 {{ form.resultado_estado.label_tag }}
                 {{ form.resultado_estado }}
@@ -114,8 +113,17 @@
                 {{ form.marcador_visitante }}
             </div>
         </div>
-        <hr>
-        {% endif %}
+        
+    {% if errors %}
+        <div class="error-messages">
+            <h2>Errores en el formulario:</h2>
+            <ul>
+                {% for field, error_list in errors.items %}
+                    <li>{{ field }}: {{ error_list }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
         <button type="submit" class="btn btn-primary">Guardar cambios</button>
         <a href="{% url 'modric:detalle_partido' partido.pk %}" class="btn btn-secondary ms-2">Volver</a>
     </form>

@@ -21,6 +21,8 @@ class PartidoForm(forms.ModelForm):
         partido = kwargs.get('instance')
         # Obtener el usuario actual
         user = kwargs.pop('user', None)
+        # Edicion
+        marcador = kwargs.pop('marcador', False)
         super(PartidoForm, self).__init__(*args, **kwargs)
 
         for field_name, field in self.fields.items():
@@ -33,6 +35,18 @@ class PartidoForm(forms.ModelForm):
                     field.widget.attrs['class'] += ' form-control'
                 else:
                     field.widget.attrs['class'] = 'form-control'
+
+        if not marcador:
+            self.fields['resultado_estado'].label = ''
+            self.fields['resultado_estado'].widget = forms.HiddenInput()
+            self.fields['marcador_local'].label = ''
+            self.fields['marcador_local'].widget = forms.HiddenInput()
+            self.fields['marcador_visitante'].label = ''
+            self.fields['marcador_visitante'].widget = forms.HiddenInput()
+            self.fields['resultado_estado'].initial = Partido.E
+            self.fields['marcador_local'].initial = 0
+            self.fields['marcador_visitante'].initial = 0
+
         if user:
             comunidades = Comunidad.objects.filter(miembros=user).order_by('nombre')
             self.fields['comunidad'].queryset = comunidades

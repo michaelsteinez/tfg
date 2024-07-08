@@ -97,7 +97,31 @@
                 {{ form.color_visitante }}
             </div>
         </div>
-        <hr>
+    <hr>
+        <div class="row">
+            <div class="col-md-4">
+                {{ form.resultado_estado.label_tag }}
+                {{ form.resultado_estado }}
+            </div>
+            <div class="col-md">
+                {{ form.marcador_local.label_tag }}
+                {{ form.marcador_local }}
+            </div>
+            <div class="col-md">
+                {{ form.marcador_visitante.label_tag }}
+                {{ form.marcador_visitante }}
+            </div> 
+        </div>
+    {% if errors %}
+        <div class="error-messages">
+            <h2>Errores en el formulario:</h2>
+            <ul>
+                {% for field, error_list in errors.items %}
+                    <li>{{ field }}: {{ error_list }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
         <button type="submit" class="btn btn-primary">Crear partido</button>
     </form>
     <a href="{% url 'modric:index' %}">Volver</a>
