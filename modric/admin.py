@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from modric.models import Deporte, Recinto, Partido, Comunidad
+from modric.models import Deporte, Recinto, Partido, Comunidad, Invitacion, Notificacion
 
 
 # Register your models here.
@@ -35,7 +35,16 @@ class ComunidadAdmin(admin.ModelAdmin):
     readonly_fields = ('fecha_creacion', 'creador')
 
 
+class InvitacionAdmin(admin.ModelAdmin):
+    list_display = ('comunidad', 'usuario', 'fecha', 'estado')
+
+class NotificacionAdmin(admin.ModelAdmin):
+    list_display = ('usuario', 'mensaje', 'leido', 'fecha')
+
+
 admin.site.register(Deporte, DeporteAdmin)
 admin.site.register(Recinto, RecintoAdmin)
 admin.site.register(Partido, PartidoAdmin)
 admin.site.register(Comunidad, ComunidadAdmin)
+admin.site.register(Invitacion, InvitacionAdmin)
+admin.site.register(Notificacion, NotificacionAdmin)
