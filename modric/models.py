@@ -8,7 +8,7 @@ from accounts.models import CustomUser
 class Comunidad(models.Model):
     nombre = models.CharField(max_length=100, unique=True)
     escudo = models.ImageField(upload_to='comunidades/', blank=True)
-    descripcion = models.TextField(blank=True)
+    descripcion = models.TextField(blank=True, verbose_name='descripción')
     creador = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='creador_comunidad')
     fecha_creacion = models.DateField(auto_now_add=True)
     administradores = models.ManyToManyField(CustomUser, related_name='administradores_comunidad')
@@ -47,7 +47,7 @@ class Invitacion(models.Model):
 class Notificacion(models.Model):
     usuario = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='notificaciones')
     mensaje = models.TextField()
-    leido = models.BooleanField(default=False)
+    leido = models.BooleanField(default=False, verbose_name='leído')
     fecha = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -72,7 +72,7 @@ class Recinto(models.Model):
     calle = models.CharField(max_length=120, blank=True)
     municipio = models.CharField(max_length=100)
     provincia = models.CharField(max_length=100)
-    pais = models.CharField(max_length=60)
+    pais = models.CharField(max_length=60, verbose_name='país')
     deportes = models.ManyToManyField(Deporte, related_name='recintos') # Lista de deportes practicables
 
     def __str__(self):
