@@ -320,7 +320,14 @@ def solicitar_membresia(request, comunidad_id):
 
 
 @login_required
-def manejar_solicitudes(request):
+def solicitudes_todas(request):
+    grupos = Invitacion.objects.filter(comunidad__administradores=request.user, estado=Invitacion.PENDIENTE).count()
+    personales = Invitacion.objects.filter(usuario=request.user, estado=Invitacion.PENDIENTE).count()
+
+    return render(request, 'modric/solicitudes_todas.html', {'grupos': grupos, 'personales': personales})
+
+@login_required
+def solicitudes_grupos(request):
     invitaciones = Invitacion.objects.filter(comunidad__administradores=request.user, estado=Invitacion.PENDIENTE)
     if request.method == 'POST':
         invitacion_id = request.POST.get('invitacion_id')
@@ -340,8 +347,8 @@ def manejar_solicitudes(request):
                 mensaje=f'Tu solicitud de unirte a la comunidad {invitacion.comunidad.nombre} ha sido denegada.'
             )
         invitacion.save()
-        return redirect('modric:manejar_solicitudes')
-    return render(request, 'modric/manejar_solicitudes.html', {'invitaciones': invitaciones})
+        return redirect('modric:solicitudes_grupos')
+    return render(request, 'modric/solicitudes_grupos.html', {'invitaciones': invitaciones})
 
 
 def solicitudes_personales(request):

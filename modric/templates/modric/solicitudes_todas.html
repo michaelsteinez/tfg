@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Invitaciones</h2>
+    {% if grupos %}
+        <p><a href="{% url 'modric:solicitudes_grupos' %}">Tienes {{ grupos }} solicitudes de acceso a comunidades de los que eres administrador.</a></p>
+    {% else %}
+        <p>No tienes solicitudes a tus comunidades que gestionar.</p>
+    {% endif %}
+    {% if personales %}
+        <p><a href="{% url 'modric:solicitudes_personales' %}">Tienes {{ personales }} solicitudes para que te unas a comunidades.</a></p>
+    {% else %}
+        <p>No tienes invitaciones nuevas.</p>
+    {% endif %}
+{% endblock %}

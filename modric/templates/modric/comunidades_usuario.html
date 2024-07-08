@@ -17,7 +17,7 @@
             </p>        
         {% endfor %}
         {% if invitaciones > 0 %}
-            <p><a href="{% url 'modric:manejar_solicitudes' %}">Tiene {{ invitaciones }} solicitudes como administrador pendientes de contestar</a></p>
+            <p><a href="{% url 'modric:solicitudes_grupos' %}">Tiene {{ invitaciones }} solicitudes como administrador pendientes de contestar</a></p>
         {% else %}
             <p>No tiene solicitudes como administrador pendientes de contestar.</p>
         {% endif %}

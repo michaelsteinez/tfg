@@ -1,8 +1,8 @@
 from django.urls import path
 from modric.views import (index, crear_partido, buscar_partidos, listar_partidos, importar_usuarios_API,
                           detalle_partido, editar_partido, detalle_recinto, jugador_partido,
-                          enviar_invitacion, manejar_solicitudes, solicitar_membresia, invitaciones_enviadas,
-                          notificaciones, detalle_comunidad, solicitudes_personales)
+                          enviar_invitacion, solicitudes_grupos, solicitar_membresia, invitaciones_enviadas,
+                          notificaciones, detalle_comunidad, solicitudes_personales, solicitudes_todas)
 from modric import views
 
 app_name = 'modric'
@@ -24,10 +24,11 @@ urlpatterns = [
     # path('recinto/crear/', recinto_crear, name='recinto_crear'),
     # path('recinto/editar/<int:pk>/', recinto_editar, name='recinto_editar'),
 
-    path('comunidad/invitaciones/enviar/', enviar_invitacion, name='enviar_invitacion'),
-    path('comunidad/invitaciones/enviadas/', invitaciones_enviadas, name='invitaciones_enviadas'),
+    path('invitaciones/enviar/', enviar_invitacion, name='enviar_invitacion'),
+    path('invitaciones/enviadas/', invitaciones_enviadas, name='invitaciones_enviadas'),
 
-    path('manejar_solicitudes/', manejar_solicitudes, name='manejar_solicitudes'),
+    path('solicitudes/', solicitudes_todas, name='solicitudes_todas'),
+    path('solicitudes/grupos/', solicitudes_grupos, name='solicitudes_grupos'),
     path('solicitudes/personales/', solicitudes_personales, name='solicitudes_personales'),
     path('solicitar_membresia/<int:comunidad_id>/', solicitar_membresia, name='solicitar_membresia'),
 
