@@ -386,7 +386,6 @@ class ComunidadesBuscarNuevas(LoginRequiredMixin, TemplateView):
         return context
 
 
-
 class ComunidadCrearView(LoginRequiredMixin, CreateView):
     model = Comunidad
     template_name = 'modric/comunidad_crear.html'
