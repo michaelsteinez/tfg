@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h2>Invitaciones</h2>
+  <h2 class="text-center">Invitaciones</h2>
     {% if grupos %}
         <p><a href="{% url 'modric:solicitudes_grupos' %}">Tienes {{ grupos }} solicitudes de acceso a comunidades de los que eres administrador.</a></p>
     {% else %}

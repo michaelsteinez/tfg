@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h2>Mis comunidades</h2>
+  <h2 class="text-center">Mis comunidades</h2>
+    <p class="text-center">Aquí puedes ver tus comunidades, gestionar solicitudes y buscar nuevas.</p>
     {% if comunidades %}
         {% for comunidad in comunidades %}
             <p><a href="{% url 'modric:detalle_comunidad' comunidad.pk %}">

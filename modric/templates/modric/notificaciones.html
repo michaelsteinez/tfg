@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h2>Notificaciones</h2>
+  <h2 class="text-center">Notificaciones</h2>
   <ul>
     {% for notificacion in notificaciones %}
       <li {% if not notificacion.leido %} style="font-weight: bold;" {% endif %}>

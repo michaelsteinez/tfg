@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
-<H1>TFG UNIR - Encuentros de aficionados</H1>
+<H1 class="text-center">TFG UNIR - Encuentros de aficionados</H1>
 
     {% if user.is_authenticated %}
-        <p>Bienvenido/a {{ user.get_username }}</p>
+        <br>
         
     <div class="row justify-content-around">
     
@@ -52,7 +52,7 @@
     
     </div>    
         
-        <p><a href="{% url 'modric:importar_starwars' %}">Importar usuarios de star wars</a></p>
+{#        <p><a href="{% url 'modric:importar_starwars' %}">Importar usuarios de star wars</a></p>#}
     {% else %}
         <p><a href="{% url 'login' %}">Iniciar sesión</a></p>
         <p><a href="{% url 'accounts:signup' %}">Registrarse</a></p>
