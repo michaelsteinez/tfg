@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Darse de alta</h2>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="input-group col-md">
+        <span class="input-group-text">@</span>{{ form.username }}
+        {{ form.username.errors }}
+    </div>
+    <div class="input-group col-md">
+        <span class="input-group-text">{{ form.email.label_tag }}</span>
+        {{ form.email }}
+        {{ form.email.errors }}
+    </div>
+    <div class="input-group col-md">
+        <span class="input-group-text">Contraseña</span>
+        {{ form.password1 }}
+        {{ form.password1.errors }}
+    </div>
+    <div class="input-group col-md">
+        <span class="input-group-text">Confirmar Contraseña</span>
+        {{ form.password2 }}
+        {{ form.password2.errors }}
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-3">
+            {{ form.altura.label_tag }}
+            {{ form.altura }}
+            {{ form.altura.errors }}
+        </div>
+        <div class="col-md-3">
+            {{ form.fecha_nac.label_tag }}
+            {{ form.fecha_nac }}
+            {{ form.fecha_nac.errors }}
+        </div>
+        <div class="col-md-3">
+            {{ form.sexo.label_tag }}
+            {{ form.sexo }}
+            {{ form.sexo.errors }}
+        </div>
+        <div class="col-md-3">
+            {{ form.foto.label_tag }}
+            {{ form.foto }}
+            {{ form.foto.errors }}
+        </div>
+    </div>
+    <br>
+    <button type="submit" class="btn btn-info">Registrarse</button>
+    <button type="button" class="btn btn-danger" onclick="window.location.href='{% url 'home' %}'">Cancelar</button>
+</form>
+{% endblock %}
