@@ -6,18 +6,18 @@
 <form method="post" enctype="multipart/form-data">
 {% csrf_token %}
 <div class="row">
-        <div class="col-md">
-        {{ form.nombre.errors }}
-        {{ form.nombre.label}}<br>
-        {{ form.nombre }}
-        </div>
-        <div class="col-md">
-          {{ form.escudo.errors }}
-          {{ form.escudo.label }}
-          {{ form.escudo }}
-        </div>
+    <div class="col-md">
+    {{ form.nombre.errors }}
+    {{ form.nombre.label}}<br>
+    {{ form.nombre }}
     </div>
-      <hr>
+    <div class="col-md">
+      {{ form.escudo.errors }}
+      {{ form.escudo.label }}<br>
+      {{ form.escudo }}
+    </div>
+</div>
+<hr>
     <div class="row">
         <div class="col-md">  
           {{ form.descripcion.errors }}
