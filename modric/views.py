@@ -181,7 +181,8 @@ def listar_partidos(request):
     ).distinct().order_by('fecha')
 
     lista_no_inscritos = []
-    for partido in partidos_futuros:
+    partidos_todos = (partidos_hoy | partidos_futuros).distinct()
+    for partido in partidos_todos:
         if comprobar_inscripcion(request.user, partido):
             lista_no_inscritos.append(partido.id)
 

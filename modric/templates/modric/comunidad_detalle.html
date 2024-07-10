@@ -31,7 +31,7 @@
         <p><strong>Descripción:</strong> {{ comunidad.descripcion }}</p>
         {% if usuario in comunidad.administradores.all %}
             <p><a href="{% url 'modric:comunidad_editar' comunidad.pk %}">Editar detalles de la comunidad</a></p>
-            <p><a href="{% url 'modric:manejar_solicitudes' %}">Gestionar comunidad (Admitir o rechazar solicitudes)</a></p>
+            <p><a href="{% url 'modric:solicitudes_todas' %}">Gestionar comunidad (Admitir o rechazar solicitudes)</a></p>
         {% endif %}
         
         {% if usuario not in comunidad.miembros.all %}
