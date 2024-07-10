@@ -34,9 +34,15 @@ class ComunidadAdmin(admin.ModelAdmin):
     )
     readonly_fields = ('fecha_creacion', 'creador')
 
+    def save_model(self, request, obj, form, change):
+        if not obj.pk:  # Solo se le asigna cuando se crea
+            obj.creador = request.user
+        super().save_model(request, obj, form, change)
+
 
 class InvitacionAdmin(admin.ModelAdmin):
     list_display = ('comunidad', 'usuario', 'fecha', 'estado')
+
 
 class NotificacionAdmin(admin.ModelAdmin):
     list_display = ('usuario', 'mensaje', 'leido', 'fecha')
