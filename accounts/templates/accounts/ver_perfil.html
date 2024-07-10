@@ -80,7 +80,7 @@
                       <form method="post" action="{% url 'modric:notificaciones' %}" style="display:inline;">
                         {% csrf_token %}
                         <input type="hidden" name="notificacion_id" value="{{ notificacion.id }}">
-                        <button type="submit">Marcar como leída</button>
+                        <button class="btn btn-primary" type="submit">Marcar como leída</button>
                       </form>
                     {% endif %}
                   </li>

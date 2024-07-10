@@ -10,8 +10,8 @@
         <form method="post" style="display:inline;">
           {% csrf_token %}
           <input type="hidden" name="invitacion_id" value="{{ invitacion.id }}">
-          <button type="submit" name="action" value="aceptar">Aceptar</button>
-          <button type="submit" name="action" value="rechazar">Rechazar</button>
+          <button class="btn btn-primary" type="submit" name="action" value="aceptar">Aceptar</button>
+          <button class="btn btn-danger" type="submit" name="action" value="rechazar">Rechazar</button>
         </form>
       </li>
     {% endfor %}
