@@ -23,11 +23,29 @@ from .models import CustomUser
 
 
 class CustomUserCreationForm(UserCreationForm):
+    fecha_nac = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date'}),
+        label='Fecha de nacimiento',
+        required=False,
+    )
+    altura = forms.IntegerField(
+        widget=forms.NumberInput(attrs={'min': '0'}),
+        label='Altura en centímetros',
+        required=False,
+    )
+    sexo = forms.ChoiceField(
+        choices=CustomUser.sexo_choices,
+        required=False,
+    )
+    foto = forms.ImageField(
+        required=False,
+        label='Foto de perfil'
+    )
     email = forms.EmailField(required=True)
-    altura = forms.IntegerField(required=False)
-    fecha_nac = forms.DateField(required=False)
-    sexo = forms.ChoiceField(choices=[('V', 'Varón'), ('M', 'Mujer')], required=False)
-    foto = forms.ImageField(required=False)
+    # altura = forms.IntegerField(required=False)
+    # # fecha_nac = forms.DateField(required=False)
+    # sexo = forms.ChoiceField(choices=[('V', 'Varón'), ('M', 'Mujer')], required=False)
+    # foto = forms.ImageField(required=False)
 
     class Meta(UserCreationForm.Meta):
         model = CustomUser

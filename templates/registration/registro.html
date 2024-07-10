@@ -1,53 +1,103 @@
 {% extends 'base.html' %}
+
+{% block title %}Registro{% endblock %}
+
 {% block content %}
-<h2>Darse de alta</h2>
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.non_field_errors }}
-    <div class="input-group col-md">
-        <span class="input-group-text">@</span>{{ form.username }}
-        {{ form.username.errors }}
-    </div>
-    <div class="input-group col-md">
-        <span class="input-group-text">{{ form.email.label_tag }}</span>
-        {{ form.email }}
-        {{ form.email.errors }}
-    </div>
-    <div class="input-group col-md">
-        <span class="input-group-text">Contraseña</span>
-        {{ form.password1 }}
-        {{ form.password1.errors }}
-    </div>
-    <div class="input-group col-md">
-        <span class="input-group-text">Confirmar Contraseña</span>
-        {{ form.password2 }}
-        {{ form.password2.errors }}
-    </div>
-    <br>
-    <div class="row">
-        <div class="col-md-3">
-            {{ form.altura.label_tag }}
-            {{ form.altura }}
-            {{ form.altura.errors }}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header text-center">
+          <h2>Darse de alta</h2>
         </div>
-        <div class="col-md-3">
-            {{ form.fecha_nac.label_tag }}
-            {{ form.fecha_nac }}
-            {{ form.fecha_nac.errors }}
+        <div class="card-body">
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="row">
+                <div class="col mb-3">
+                  <label class="form-label" for="id_username">@ Username</label>
+                </div>
+                <div class="col mb-3">
+                  {{ form.username }}
+                </div>
+                <div class="text-danger">{{ form.username.errors }}</div>
+            </div>
+            <div class="row">
+                <div class="col mb-3">
+                    <label class="form-label" for="id_email">{{ form.email.label_tag }}</label>
+                </div>
+                <div class="col mb-3">
+                    {{ form.email }}
+                </div>
+                <div class="text-danger">{{ form.email.errors }}</div>
+            </div>
+            <div class="row">
+                <div class="col mb-3">
+                    <label class="form-label" for="id_password1">Contraseña</label>
+                </div>
+                <div class="col mb-3">
+                    {{ form.password1 }}
+                </div>
+                <div class="text-danger">{{ form.password1.errors }}</div>
+            </div>
+            <div class="row">
+                <div class="col mb-3">
+                    <label class="form-label" for="id_password2">Confirmar Contraseña</label>
+                </div>
+                <div class="col mb-3">
+                    {{ form.password2 }}
+                </div>
+                <div class="text-danger">{{ form.password2.errors }}</div>
+            </div>
+            <div class="row">
+                <div class="col mb-3">
+                    <label class="form-label" for="id_altura">{{ form.altura.label_tag }}</label>
+                </div>
+                <div class="col mb-3">
+                    {{ form.altura }}
+                </div>
+                <div class="text-danger">{{ form.altura.errors }}</div>
+            </div>
+            <div class="row">
+                <div class="col mb-3">
+                    <label class="form-label" for="id_fecha_nac">{{ form.fecha_nac.label_tag }}</label>
+                </div>
+                <div class="col mb-3">
+                    {{ form.fecha_nac }}
+                </div>
+                <div class="text-danger">{{ form.fecha_nac.errors }}</div>
+            </div>
+            <div class="row">
+                <div class="col mb-3">
+                    <label class="form-label" for="id_sexo">{{ form.sexo.label_tag }}</label>
+                </div>
+                <div class="col mb-3">
+                    {{ form.sexo }}
+                </div>
+                <div class="text-danger">{{ form.sexo.errors }}</div>
+            </div>
+            <div class="row">
+                <div class="col mb-3">
+                    <label class="form-label" for="id_foto">{{ form.foto.label_tag }}</label>
+                </div>
+                <div class="col mb-3">
+                    {{ form.foto }}
+                </div>
+                <div class="text-danger">{{ form.foto.errors }}</div>
+            </div>
+
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary">Registrarse</button>
+              <button type="button" class="btn btn-danger" onclick="window.location.href='{% url 'home' %}'">Cancelar</button>
+            </div>
+            <div class="card-footer text-center">
+              <a class="btn btn-link" href="{% url 'login' %}">¿Ya tienes una cuenta? Inicia sesión</a>
+            </div>
+          </form>
         </div>
-        <div class="col-md-3">
-            {{ form.sexo.label_tag }}
-            {{ form.sexo }}
-            {{ form.sexo.errors }}
-        </div>
-        <div class="col-md-3">
-            {{ form.foto.label_tag }}
-            {{ form.foto }}
-            {{ form.foto.errors }}
-        </div>
+      </div>
     </div>
-    <br>
-    <button type="submit" class="btn btn-info">Registrarse</button>
-    <button type="button" class="btn btn-danger" onclick="window.location.href='{% url 'home' %}'">Cancelar</button>
-</form>
+  </div>
+</div>
 {% endblock %}

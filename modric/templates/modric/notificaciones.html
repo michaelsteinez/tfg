@@ -3,6 +3,7 @@
 {% block content %}
   <h2 class="text-center">Notificaciones</h2>
   <ul>
+  {% if notificaciones %}
     {% for notificacion in notificaciones %}
       <li {% if not notificacion.leido %} style="font-weight: bold;" {% endif %}>
         {{ notificacion.mensaje }} - {{ notificacion.fecha_notificacion }}
@@ -15,5 +16,8 @@
         {% endif %}
       </li>
     {% endfor %}
+  {% else %}
+      <p>Actualmente no tiene notificaciones.</p>
+  {% endif %}
   </ul>
 {% endblock %}
